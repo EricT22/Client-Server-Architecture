@@ -35,4 +35,8 @@ public class Server implements Runnable{
     public void run(){
 
     }
+
+    public void stop(){
+        
+    }
 }

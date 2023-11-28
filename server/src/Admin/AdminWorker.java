@@ -15,4 +15,7 @@ public class AdminWorker implements Runnable{
     public void updateData(){
 
     }
+
+    public void stop() {
+    }
 }
