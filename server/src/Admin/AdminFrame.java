@@ -1,7 +1,5 @@
 package Admin;
 
-// imports being buggy, just keep them here and at the end get rid of the ones not being used
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -65,8 +63,8 @@ public class AdminFrame extends JFrame{
                     new Thread(worker).start();
                 } else {
                     onOff.setText("START SERVER");
-                    worker.stop();
                     server.stop();
+                    worker.stop();
                 }
             }
             
