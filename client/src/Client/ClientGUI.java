@@ -367,6 +367,7 @@ public class ClientGUI extends JFrame{
             this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
             
             this.add(createLabel);
+            this.add(Box.createRigidArea(new Dimension(0, 300)));
             this.add(emailLabel);
             this.add(emailField);
             this.add(userLabel);
