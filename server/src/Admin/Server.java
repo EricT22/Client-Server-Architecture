@@ -6,14 +6,14 @@ import Database.SystemDatabase;
 import Database.UserDatabase;
 
 import java.net.ServerSocket;
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.HttpServer;
 
-public class Server implements Runnable{
+public class Server implements Runnable {
     private static final int PORT = 0; // idk change later
 
     private static UserDatabase userDB;
     private static SystemDatabase systemDB;
-    
+
     private HttpServer APIServer;
     private ConcurrentMap<Integer, ClientThread> clients;
     private ServerSocket socket;
@@ -22,21 +22,20 @@ public class Server implements Runnable{
 
     private int nextID;
 
-
-    public Server(){
+    public Server() {
 
     }
 
-    public void configureServer(){
+    public void configureServer() {
 
     }
 
     @Override
-    public void run(){
+    public void run() {
 
     }
 
-    public void stop(){
-        
+    public void stop() {
+
     }
 }
