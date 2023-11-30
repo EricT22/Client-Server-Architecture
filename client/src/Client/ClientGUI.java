@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -170,12 +171,15 @@ public class ClientGUI extends JFrame{
             this.add(Box.createRigidArea(new Dimension(50, 0)));
             this.add(passField);
             this.add(Box.createRigidArea(new Dimension(250, 0)));
-            this.add(disconnectButton);
-            this.add(Box.createRigidArea(new Dimension(100, 200))); 
-            this.add(loginButton);
-            this.add(Box.createRigidArea(new Dimension(100, 200)));
-            this.add(createAcctButton);
-            this.add(Box.createRigidArea(new Dimension(100, 200)));
+
+            JPanel buttons = new JPanel();
+            buttons.setBackground(Color.BLACK);
+            buttons.setLayout(new GridLayout(1, 3, 10, 0));
+            buttons.add(disconnectButton);
+            buttons.add(loginButton);
+            buttons.add(createAcctButton);
+            this.add(buttons);
+            this.add(Box.createRigidArea(new Dimension(0, 200)));
         }
 
         private void prepareComponents() {
@@ -264,14 +268,22 @@ public class ClientGUI extends JFrame{
             
             prepareComponents();
 
-            
+            // TODO: needs layout fixing
+
             this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
             
             this.add(dataField);
-            this.add(disconnectButton);
-            this.add(logoutButton);
-            this.add(saveButton);
-            this.add(readButton);
+            this.add(Box.createRigidArea(new Dimension(0, 300)));
+
+            JPanel buttons = new JPanel();
+            buttons.setBackground(Color.BLACK);
+            buttons.setLayout(new GridLayout(2, 3, 10, 200));
+            buttons.add(saveButton);
+            buttons.add(readButton);
+            buttons.add(disconnectButton);
+            buttons.add(logoutButton);
+            this.add(buttons);
+            this.add(Box.createRigidArea(new Dimension(0, 300)));
         }
 
         private void prepareComponents() {
