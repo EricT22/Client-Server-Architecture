@@ -41,6 +41,7 @@ public class Server implements Runnable {
             if(!"POST".equals(exchange.getRequestMethod())){
                 exchange.sendResponseHeaders(405, -1);
             } else {
+                //TODO Add credential checking and failure response, update corresponding client thread
                 String responseText = "Logged in successfully";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
                 OutputStream output = exchange.getResponseBody();
@@ -49,21 +50,61 @@ public class Server implements Runnable {
             }
             exchange.close();
         }));
-
+        
         APIServer.createContext("/api/recovery", (exchange -> {
-
+            if(!"POST".equals(exchange.getRequestMethod())){
+                exchange.sendResponseHeaders(405, -1);
+            } else {
+                //TODO Lookup user email with parsed username from request, utilize email dispatcher
+                String responseText = "Recovery email sent to the specified user.";
+                exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                OutputStream output = exchange.getResponseBody();
+                output.write(responseText.getBytes());
+                output.flush();
+            }
+            exchange.close();
         }));
 
         secureContexts.add(APIServer.createContext("/api/write", (exchange -> {
-
+            if(!"POST".equals(exchange.getRequestMethod())){
+                exchange.sendResponseHeaders(405, -1);
+            } else {
+                //TODO Finish the BasicAuthenticator
+                String responseText = "Data written to database";
+                exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                OutputStream output = exchange.getResponseBody();
+                output.write(responseText.getBytes());
+                output.flush();
+            }
+            exchange.close();
         })));
 
         secureContexts.add(APIServer.createContext("/api/read", (exchange -> {
-
+            if(!"GET".equals(exchange.getRequestMethod())){
+                exchange.sendResponseHeaders(405, -1);
+            } else {
+                //TODO Finish the BasicAuthenticator, return data to user
+                String responseText = "Data read from database";
+                exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                OutputStream output = exchange.getResponseBody();
+                output.write(responseText.getBytes());
+                output.flush();
+            }
+            exchange.close();
         })));
 
         secureContexts.add(APIServer.createContext("/api/logout", (exchange -> {
-
+            if(!"POST".equals(exchange.getRequestMethod())){
+                exchange.sendResponseHeaders(405, -1);
+            } else {
+                //TODO Finish the BasicAuthenticator, update corresponding client thread
+                String responseText = "Succesfully logged out.";
+                exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                OutputStream output = exchange.getResponseBody();
+                output.write(responseText.getBytes());
+                output.flush();
+            }
+            exchange.close();
         })));
 
         secureContexts.forEach((c) -> c.setAuthenticator(new BasicAuthenticator("pwdProtected") {
