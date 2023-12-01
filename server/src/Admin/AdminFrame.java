@@ -20,7 +20,7 @@ public class AdminFrame extends JFrame{
     private final int WIDTH = 1000;
     private final int HEIGHT = 800; 
 
-    public AdminFrame(){
+    public AdminFrame() throws Exception{
         super("Admin Console");
 
         this.setSize(WIDTH, HEIGHT);
@@ -41,7 +41,7 @@ public class AdminFrame extends JFrame{
         this.setVisible(true);
     }
 
-    private void prepareComponents() {
+    private void prepareComponents() throws Exception {
         server = new Server();
         worker = new AdminWorker(this);
 
@@ -73,7 +73,11 @@ public class AdminFrame extends JFrame{
     }
 
     public static void main(String[] args) {
-        new AdminFrame();
+        try {
+            new AdminFrame();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }
