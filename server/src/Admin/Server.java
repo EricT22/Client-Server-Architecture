@@ -1,12 +1,18 @@
 package Admin;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentMap;
 
 import Database.SystemDatabase;
 import Database.UserDatabase;
 
+import java.io.IOError;
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.BasicAuthenticator;
 
 public class Server implements Runnable {
     private static final int PORT = 0; // idk change later
@@ -22,12 +28,17 @@ public class Server implements Runnable {
 
     private int nextID;
 
-    public Server() {
-
+    public Server() throws Exception {
+        configureServer();
     }
 
-    public void configureServer() {
+    public void configureServer() throws IOException {
+        ArrayList<HttpContext> contexts = new ArrayList<HttpContext>();
+        APIServer = HttpServer.create(new InetSocketAddress(PORT),0);
 
+        contexts.forEach((c) -> c.setAuthenticator(new BasicAuthenticator() {
+
+        }));
     }
 
     @Override
