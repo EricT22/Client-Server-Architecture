@@ -37,7 +37,7 @@ public class Server implements Runnable {
         ArrayList<HttpContext> secureContexts = new ArrayList<HttpContext>();
         APIServer = HttpServer.create(new InetSocketAddress(PORT), 0);
 
-        APIServer.createContext("/api/login", (exchange -> {
+        secureContexts.add(APIServer.createContext("/api/login", (exchange -> {
             if(!"POST".equals(exchange.getRequestMethod())){
                 exchange.sendResponseHeaders(405, -1);
             } else {
@@ -49,7 +49,7 @@ public class Server implements Runnable {
                 output.flush();
             }
             exchange.close();
-        }));
+        })));
         
         APIServer.createContext("/api/recovery", (exchange -> {
             if(!"POST".equals(exchange.getRequestMethod())){
