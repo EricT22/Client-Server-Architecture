@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -28,7 +29,8 @@ public class ClientGUI extends JFrame{
 
     private Socket server;
 
-    private String ipAddress;
+    private String ipAddress = "localhost";
+    private int APIPort = 8000;
 
     private HeartbeatThread heartbeat;
 
@@ -64,6 +66,8 @@ public class ClientGUI extends JFrame{
         this.add(container, BorderLayout.CENTER);
 
         this.setVisible(true);
+
+        APIRequest.setIP(ipAddress + ":" + Integer.toString(APIPort));
     }
 
     private void displayImage(){
@@ -225,7 +229,14 @@ public class ClientGUI extends JFrame{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (/*TODO:user and password combo correct */ true)
+                    APIRequest loginRequest = APIRequest.makeRequest(RequestScheme.LOGIN,"");
+                    boolean valid = false;
+                    try {
+                        valid = loginRequest.execute();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    if (/*TODO:user and password combo correct */ valid)
                         swapToPage("MAIN");
                     // else if (loginCounter == 3){
                     //     acct recov pop up
