@@ -25,6 +25,7 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create("http://" + serverIP + "/api/login"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
+                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
                         .build();
                 break;
             case ACCT_RECOVERY:
