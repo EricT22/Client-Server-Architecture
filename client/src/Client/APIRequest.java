@@ -19,6 +19,7 @@ public class APIRequest {
     }
 
     public static APIRequest makeRequest(RequestScheme scheme, String data) {
+        //TODO replace YTWRta with username:password encoded into base64
         APIRequest apiReq = new APIRequest();
         switch (scheme) {
             case LOGIN:
@@ -38,18 +39,21 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/login"))
                         .method("GET", HttpRequest.BodyPublishers.noBody())
+                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
                         .build();
                 break;
             case WRITE_DATA:
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/login"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
+                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
                         .build();
                 break;
             case LOGOUT:
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/login"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
+                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
                         .build();
                 break;
             default:
