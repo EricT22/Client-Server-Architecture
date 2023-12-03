@@ -6,11 +6,11 @@ import java.util.concurrent.ConcurrentMap;
 import Database.SystemDatabase;
 import Database.UserDatabase;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
@@ -36,13 +36,17 @@ public class Server implements Runnable {
     public void configureServer() throws IOException {
         ArrayList<HttpContext> secureContexts = new ArrayList<HttpContext>();
         APIServer = HttpServer.create(new InetSocketAddress(PORT), 0);
-
         secureContexts.add(APIServer.createContext("/api/login", (exchange -> {
-            if(!"POST".equals(exchange.getRequestMethod())){
+            if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
-                //TODO Add credential checking and failure response, update corresponding client thread
-                String responseText = "Logged in successfully";
+                // TODO Add credential checking and failure response, update corresponding
+                // client thread
+                String responseText = "Logged in: "
+                        + exchange.getRequestHeaders().getFirst("Authorization")
+                                .substring(exchange.getRequestHeaders().getFirst("Authorization").indexOf(
+                                        " ") + 1);
+                System.out.println(responseText);
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
                 OutputStream output = exchange.getResponseBody();
                 output.write(responseText.getBytes());
@@ -50,12 +54,13 @@ public class Server implements Runnable {
             }
             exchange.close();
         })));
-        
+
         APIServer.createContext("/api/recovery", (exchange -> {
-            if(!"POST".equals(exchange.getRequestMethod())){
+            if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
-                //TODO Lookup user email with parsed username from request, utilize email dispatcher
+                // TODO Lookup user email with parsed username from request, utilize email
+                // dispatcher
                 String responseText = "Recovery email sent to the specified user.";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
                 OutputStream output = exchange.getResponseBody();
@@ -66,10 +71,10 @@ public class Server implements Runnable {
         }));
 
         secureContexts.add(APIServer.createContext("/api/write", (exchange -> {
-            if(!"POST".equals(exchange.getRequestMethod())){
+            if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
-                //TODO Finish the BasicAuthenticator
+                // TODO Finish the BasicAuthenticator
                 String responseText = "Data written to database";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
                 OutputStream output = exchange.getResponseBody();
@@ -80,10 +85,10 @@ public class Server implements Runnable {
         })));
 
         secureContexts.add(APIServer.createContext("/api/read", (exchange -> {
-            if(!"GET".equals(exchange.getRequestMethod())){
+            if (!"GET".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
-                //TODO Finish the BasicAuthenticator, return data to user
+                // TODO Finish the BasicAuthenticator, return data to user
                 String responseText = "Data read from database";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
                 OutputStream output = exchange.getResponseBody();
@@ -94,10 +99,10 @@ public class Server implements Runnable {
         })));
 
         secureContexts.add(APIServer.createContext("/api/logout", (exchange -> {
-            if(!"POST".equals(exchange.getRequestMethod())){
+            if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
-                //TODO Finish the BasicAuthenticator, update corresponding client thread
+                // TODO Finish the BasicAuthenticator, update corresponding client thread
                 String responseText = "Succesfully logged out.";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
                 OutputStream output = exchange.getResponseBody();
