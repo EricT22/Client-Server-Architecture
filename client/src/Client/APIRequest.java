@@ -80,8 +80,20 @@ public class APIRequest {
             return false;
         }
         response = HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.get().body());
-        return response.get().statusCode() == 200;
+        if (response.get().statusCode() != 200) {
+            System.out.println(response.get().body());
+            return false;
+        }
+        switch (scheme) {
+            case LOGIN:
+                System.out.println("Sucessfully logged in with credentials: " + new String(Base64.getDecoder()
+                        .decode(response.get().body().substring(response.get().body().indexOf(": ") + 2))));
+                break;
+            default:
+                System.out.println(response.get().body());
+                break;
+        }
+        return true;
     }
 
     public String getResponse() {
