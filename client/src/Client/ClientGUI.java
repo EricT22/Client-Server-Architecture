@@ -125,7 +125,7 @@ public class ClientGUI extends JFrame{
             connectButton = new JButton("CONNECT");
             connectButton.setFont(new Font("Arial", Font.PLAIN, 50));
             connectButton.addActionListener(new ActionListener() {
-
+                // TODO connect to server socket here
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (connectToServer(ipField.getText()) == -1){
@@ -225,7 +225,7 @@ public class ClientGUI extends JFrame{
             disconnectButton = new JButton("Disconnect");
             disconnectButton.setFont(new Font("Arial", Font.PLAIN, 25));
             disconnectButton.addActionListener(new ActionListener() {
-
+                // TODO End Socket Connetion here.  Stop heartbeat.
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     stopHeartbeat();
