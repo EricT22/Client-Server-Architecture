@@ -33,9 +33,14 @@ public class Server implements Runnable {
 
     }
 
-    public void configureServer() throws IOException {
-        ArrayList<HttpContext> secureContexts = new ArrayList<HttpContext>();
+    public void configureAPIServer() throws IOException {
+        
+        //Create an API Server
         APIServer = HttpServer.create(new InetSocketAddress(PORT), 0);
+
+        //Create a list for contexts that we require username and password authentication on.
+        ArrayList<HttpContext> secureContexts = new ArrayList<HttpContext>();
+
         secureContexts.add(APIServer.createContext("/api/login", (exchange -> {
             if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
@@ -127,7 +132,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
-            configureServer();
+            configureAPIServer();
             System.out.println("API Server is online at " + APIServer.getAddress());
         } catch (IOException e) {
             e.printStackTrace();
