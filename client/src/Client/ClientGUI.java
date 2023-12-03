@@ -163,27 +163,38 @@ public class ClientGUI extends JFrame{
             prepareComponents();
 
             
-            this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
+            this.setLayout(new BorderLayout());
+
+            JPanel mainLabelPanel = new JPanel();
+            mainLabelPanel.setBackground(Color.BLACK);
+            mainLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            mainLabelPanel.add(loginLabel);
+            mainLabelPanel.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(mainLabelPanel, BorderLayout.NORTH);
             
-            this.add(loginLabel);
-            this.add(Box.createRigidArea(new Dimension(0, 300)));
-            this.add(userLabel);
-            this.add(Box.createRigidArea(new Dimension(50, 0)));
-            this.add(userField);
-            this.add(Box.createRigidArea(new Dimension(250, 0)));
-            this.add(passLabel);
-            this.add(Box.createRigidArea(new Dimension(50, 0)));
-            this.add(passField);
-            this.add(Box.createRigidArea(new Dimension(250, 0)));
+            JPanel contentPanel = new JPanel();
+            contentPanel.setBackground(Color.BLACK);
+            contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            contentPanel.add(userLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(58, 0)));
+            contentPanel.add(userField);
+            contentPanel.add(passLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+            contentPanel.add(passField);
+            this.add(contentPanel, BorderLayout.CENTER);
 
             JPanel buttons = new JPanel();
             buttons.setBackground(Color.BLACK);
-            buttons.setLayout(new GridLayout(1, 3, 10, 0));
+            buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
             buttons.add(disconnectButton);
             buttons.add(loginButton);
             buttons.add(createAcctButton);
-            this.add(buttons);
-            this.add(Box.createRigidArea(new Dimension(0, 200)));
+            buttons.add(Box.createRigidArea(new Dimension(0, 350)));
+            this.add(buttons, BorderLayout.SOUTH);
+
+            
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.WEST);
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.EAST);
         }
 
         private void prepareComponents() {
