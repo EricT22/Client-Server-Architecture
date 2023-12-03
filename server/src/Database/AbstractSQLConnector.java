@@ -3,9 +3,10 @@ package Database;
 // SQL jdbc not added to library yet
 public abstract class AbstractSQLConnector implements DatabaseInterface {
 
-    private Connection connection;
-    private Statement stmt;
-    private ResultSet rset;
+    //TODO Add this library
+    // private Connection connection;
+    // private Statement stmt;
+    // private ResultSet rset;
 
     private String url;
 
@@ -20,6 +21,6 @@ public abstract class AbstractSQLConnector implements DatabaseInterface {
 
     @Override
     public String getResultSet(){
-
+        return "";
     }
 }
