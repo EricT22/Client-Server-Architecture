@@ -25,9 +25,9 @@ public class Server implements Runnable {
     private ConcurrentMap<Integer, ClientThread> clients;
     private ServerSocket socket;
 
-    private EmailDispatcher emailDispatch;
+    private volatile boolean active = true;
 
-    private int nextID;
+    private EmailDispatcher emailDispatch;
 
     public Server() {
 
@@ -131,15 +131,23 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Starting the Server");
+
         try {
             configureAPIServer();
             System.out.println("API Server is online at " + APIServer.getAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        while (active) {
+            
+        }
+        System.out.println("Server thread ending");
     }
 
     public void stop() {
         APIServer.stop(0);
+        active = false;
     }
 }
