@@ -270,20 +270,27 @@ public class ClientGUI extends JFrame{
 
             // TODO: needs layout fixing
 
-            this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
-            
-            this.add(dataField);
-            this.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.setLayout(new BorderLayout());
+
+            JPanel dataPanel = new JPanel();
+            dataPanel.setBackground(Color.BLACK);
+            dataPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            dataPanel.add(dataField);
+            dataPanel.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(dataPanel, BorderLayout.NORTH);
 
             JPanel buttons = new JPanel();
             buttons.setBackground(Color.BLACK);
-            buttons.setLayout(new GridLayout(2, 3, 10, 200));
+            buttons.setLayout(new GridLayout(2, 2, 20, 50));
             buttons.add(saveButton);
             buttons.add(readButton);
             buttons.add(disconnectButton);
             buttons.add(logoutButton);
-            this.add(buttons);
-            this.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(buttons, BorderLayout.CENTER);
+
+            this.add(Box.createRigidArea(new Dimension(0, 300)), BorderLayout.SOUTH);
+            this.add(Box.createRigidArea(new Dimension(300, 0)), BorderLayout.WEST);
+            this.add(Box.createRigidArea(new Dimension(300, 0)), BorderLayout.EAST);
         }
 
         private void prepareComponents() {
@@ -364,18 +371,40 @@ public class ClientGUI extends JFrame{
             prepareComponents();
 
             
-            this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
+            this.setLayout(new BorderLayout());
             
-            this.add(createLabel);
-            this.add(Box.createRigidArea(new Dimension(0, 300)));
-            this.add(emailLabel);
-            this.add(emailField);
-            this.add(userLabel);
-            this.add(userField);
-            this.add(passLabel);
-            this.add(passField);
-            this.add(disconnectButton);
-            this.add(createButton);
+            JPanel mainLabelPanel = new JPanel();
+            mainLabelPanel.setBackground(Color.BLACK);
+            mainLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            mainLabelPanel.add(createLabel);
+            mainLabelPanel.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(mainLabelPanel, BorderLayout.NORTH);
+
+            JPanel contentPanel = new JPanel();
+            contentPanel.setBackground(Color.BLACK);
+            contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            contentPanel.add(emailLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(152, 0)));
+            contentPanel.add(emailField);
+            contentPanel.add(userLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(58, 0)));
+            contentPanel.add(userField);
+            contentPanel.add(passLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+            contentPanel.add(passField);
+            this.add(contentPanel, BorderLayout.CENTER);
+
+            JPanel buttons = new JPanel();
+            buttons.setBackground(Color.BLACK);
+            buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+            buttons.add(disconnectButton);
+            buttons.add(createButton);
+            buttons.add(Box.createRigidArea(new Dimension(0, 200)));
+            this.add(buttons, BorderLayout.SOUTH);
+
+            
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.WEST);
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.EAST);
         }
 
         private void prepareComponents() {
