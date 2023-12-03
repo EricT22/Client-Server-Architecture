@@ -241,7 +241,7 @@ public class ClientGUI extends JFrame{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //TODO Eventually pass the session id that we receive when socket established in data
-                    APIRequest loginRequest = APIRequest.makeRequest(RequestScheme.LOGIN,"");
+                    APIRequest loginRequest = APIRequest.makeRequest(RequestScheme.LOGIN, userField.getText() + ":" + passField.getText());
                     boolean valid = false;
                     try {
                         valid = loginRequest.execute();

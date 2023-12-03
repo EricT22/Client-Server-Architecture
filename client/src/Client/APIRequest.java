@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -18,15 +19,21 @@ public class APIRequest {
         serverIP = ip;
     }
 
+    public APIRequest(RequestScheme iScheme, String data) {
+        scheme = iScheme;
+        payload = data;
+    }
+
     public static APIRequest makeRequest(RequestScheme scheme, String data) {
-        //TODO replace YTWRta with username:password encoded into base64
-        APIRequest apiReq = new APIRequest();
+        // TODO replace YTWRta with username:password encoded into base64
+        APIRequest apiReq = new APIRequest(scheme, data);
+
         switch (scheme) {
             case LOGIN:
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create("http://" + serverIP + "/api/login"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
+                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(data.getBytes()))
                         .build();
                 break;
             case ACCT_RECOVERY:
