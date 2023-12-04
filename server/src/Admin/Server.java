@@ -3,6 +3,7 @@ package Admin;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import Database.SystemDatabase;
 import Database.UserDatabase;
@@ -13,12 +14,13 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
 
-public class Server implements Runnable {
+public class Server extends Thread {
     private static final int API_PORT = 8001;
     private static final int PORT = 8000;
 
@@ -30,12 +32,12 @@ public class Server implements Runnable {
     private ServerSocket socket;
     private ConcurrentMap<Integer, Boolean> sessionRegistry = new ConcurrentHashMap<Integer, Boolean>();
 
-    private volatile boolean active = true;
+    private final AtomicBoolean active = new AtomicBoolean(true);
 
     private EmailDispatcher emailDispatch;
 
-    public Server() {
-
+    public Server() throws IOException {
+        configureAPIServer();
     }
 
     public void configureAPIServer() throws IOException {
@@ -132,7 +134,6 @@ public class Server implements Runnable {
         }));
 
         APIServer.setExecutor(null);
-        APIServer.start();
     }
 
     @Override
@@ -142,7 +143,7 @@ public class Server implements Runnable {
         clientMap = new ConcurrentHashMap<Integer, ClientThread>();
 
         try {
-            configureAPIServer();
+            APIServer.start();
             System.out.println("API Server is online at " + APIServer.getAddress());
             socket = new ServerSocket(8000);
             System.out.println("Server Socket is online at " + socket.getInetAddress());
@@ -151,23 +152,20 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
 
-        while (active) {
+        while (active.get()) {
             try {
                 Socket cSocket = socket.accept();
                 DataOutputStream toClient = new DataOutputStream(cSocket.getOutputStream());
-
                 // The client will take -1 to mean that their connection request rejected.
                 int sessionID = getNextAvailableSession();
                 toClient.writeInt(sessionID);
-
                 if (sessionID != -1) {
                     ClientThread cThread = new ClientThread(sessionID, cSocket);
                     sessionRegistry.put(sessionID, true);
                     clientMap.put(sessionID, cThread);
-                    cThread.start();
+                    // cThread.start();
                 }
             } catch (Exception e) {
-
             }
         }
         System.out.println("Server thread ending");
@@ -187,13 +185,23 @@ public class Server implements Runnable {
     }
 
     private void initializeSessionRegistry() {
-        for (int i = 0; i <= Integer.MAX_VALUE; i++) {
+        System.out.println("Initializing Session Registry");
+        for (int i = 0; i <= 999999; i++) {
             sessionRegistry.put(i, false);
         }
+        System.out.println("Session Registry Initialized");
     }
 
-    public void stop() {
-        APIServer.stop(0);
-        active = false;
+    public void shutdownServer() throws IOException {
+        System.out.println("Attempting to stop server.");
+        socket.close();
+        clientMap.forEach((key, value) -> {
+            try {
+                value.getSocket().close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        active.set(false);
     }
 }
