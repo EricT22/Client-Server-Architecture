@@ -29,7 +29,8 @@ public class ClientGUI extends JFrame{
     private Socket server;
 
     private String ipAddress = "localhost";
-    private int APIPort = 8000;
+    private int API_Port = 8001;
+    private int SOCKET_Port = 8000;
 
     private HeartbeatThread heartbeat;
 
@@ -73,7 +74,7 @@ public class ClientGUI extends JFrame{
 
         this.setVisible(true);
 
-        APIRequest.setIP(ipAddress + ":" + Integer.toString(APIPort));
+        APIRequest.setIP(ipAddress + ":" + Integer.toString(API_Port));
     }
 
     private void displayImage(){
