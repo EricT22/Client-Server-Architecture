@@ -13,6 +13,10 @@ public class ClientThread extends Thread{
         socket = iSocket;
     }
 
+    public Socket getSocket(){
+        return socket;
+    }
+
     public void stopClient(){
 
     }
