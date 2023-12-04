@@ -1,7 +1,5 @@
 package Client;
 
-// TODO: make layout look somewhat more decent
-
 import java.net.Socket;
 
 import java.awt.CardLayout;
