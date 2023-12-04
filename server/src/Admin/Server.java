@@ -16,7 +16,7 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
 
 public class Server implements Runnable {
-    private static final int PORT = 8000;
+    private static final int PORT = 8001;
 
     private static UserDatabase userDB;
     private static SystemDatabase systemDB;
@@ -132,10 +132,11 @@ public class Server implements Runnable {
     @Override
     public void run() {
         System.out.println("Starting the Server");
-
         try {
             configureAPIServer();
             System.out.println("API Server is online at " + APIServer.getAddress());
+            socket = new ServerSocket();
+            System.out.println("Server Socket is online at " + socket.getInetAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }
