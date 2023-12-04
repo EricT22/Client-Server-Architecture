@@ -23,10 +23,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 
-public class ClientGUI extends JFrame{
-    private JTextArea field;
-    // one or more buttons
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+
+public class ClientGUI extends JFrame{
     private Socket server;
 
     private String ipAddress = "localhost";
@@ -37,7 +38,8 @@ public class ClientGUI extends JFrame{
     private int sessionID;
 
     private final int WIDTH = 1000;
-    private final int HEIGHT = 800; 
+    private final int HEIGHT = 800;
+
 
     private JPanel container;
 
@@ -85,6 +87,14 @@ public class ClientGUI extends JFrame{
 
     private void stopHeartbeat(){
         // TODO: implement
+    }
+
+    private boolean checkPasswordForm(){
+
+    }
+
+    private boolean checkEmailForm(){
+
     }
     
     private void swapToPage(String pagename){
