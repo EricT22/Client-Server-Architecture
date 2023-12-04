@@ -33,7 +33,7 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create("http://" + serverIP + "/api/login"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(data.getBytes()))
+                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .build();
                 break;
             case ACCT_RECOVERY:
@@ -67,6 +67,10 @@ public class APIRequest {
                 break;
         }
         return apiReq;
+    }
+
+    private String getPayload() {
+        return payload;
     }
 
     @Override
