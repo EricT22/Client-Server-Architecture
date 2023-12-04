@@ -23,8 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import java.util.Scanner;
 
 
 public class ClientGUI extends JFrame{
@@ -40,6 +41,12 @@ public class ClientGUI extends JFrame{
     private final int WIDTH = 1000;
     private final int HEIGHT = 800;
 
+    // TODO: determine if we need special chars, if we do, uncomment the code below
+    private final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])" + /*(?=.*[@#$%^&+=]) */ "(?=\\S+$).{8,}$";
+    private Pattern passPattern = Pattern.compile(PASSWORD_REGEX);
+
+    private final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
 
     private JPanel container;
 
@@ -89,12 +96,12 @@ public class ClientGUI extends JFrame{
         // TODO: implement
     }
 
-    private boolean checkPasswordForm(){
-
+    private boolean checkPasswordForm(String password){
+        return passPattern.matcher(password).matches();
     }
 
-    private boolean checkEmailForm(){
-
+    private boolean checkEmailForm(String email){
+        return emailPattern.matcher(email).matches();
     }
     
     private void swapToPage(String pagename){
@@ -508,5 +515,29 @@ public class ClientGUI extends JFrame{
 
     public static void main(String[] args) {
         new ClientGUI();
+        
+        /* REGEX CHECK BELOW
+         * if requirements change, uncomment code below. and combine first two lines.
+        */
+
+        // ClientGUI gui = 
+        
+        // Scanner kb = new Scanner(System.in);
+        // String search = "";
+        // do {
+        //     System.out.print("Enter your email: ");
+        //     search = kb.next();
+            
+        //     System.out.println((!gui.checkEmailForm(search) ? "Not a" : "A") + " valid email address");
+        // } while (!gui.checkEmailForm(search));
+        
+        // do {
+        //     System.out.println("Enter a password:" );
+        //     search = kb.next();
+        //     System.out.println((!gui.checkPasswordForm(search) ? "Not a" : "A") + " valid password");
+        // } while (!gui.checkPasswordForm(search));
+        
+        // kb.close();
     }
+
 }
