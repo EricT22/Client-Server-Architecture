@@ -25,7 +25,7 @@ public class Server implements Runnable {
     private static SystemDatabase systemDB;
 
     private HttpServer APIServer;
-    private ConcurrentMap<Integer, ClientThread> clients;
+    private ConcurrentMap<Integer, ClientThread> clientMap;
     private ServerSocket socket;
     private ConcurrentMap<Integer, Boolean> sessionRegistry = new ConcurrentHashMap<Integer,Boolean>();
 
@@ -137,6 +137,9 @@ public class Server implements Runnable {
     @Override
     public void run() {
         System.out.println("Starting the Server");
+        
+        clientMap = new ConcurrentHashMap<Integer,ClientThread>();
+
         try {
             configureAPIServer();
             System.out.println("API Server is online at " + APIServer.getAddress());
@@ -151,10 +154,13 @@ public class Server implements Runnable {
             try {
                 Socket cSocket = socket.accept();
                 int sessionID = getNextAvailableSession();
-                if(sessionID != -1){
-
+                if(sessionID == -1){
+                    //TODO alert clients we are max load.
                 } else {
-                    
+                    ClientThread cThread = new ClientThread(sessionID, cSocket);
+                    sessionRegistry.put(sessionID, true);
+                    clientMap.put(sessionID, cThread);
+                    cThread.start();
                 }
 
             } catch (Exception e) {
