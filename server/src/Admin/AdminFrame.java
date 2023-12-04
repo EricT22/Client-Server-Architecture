@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -41,7 +43,7 @@ public class AdminFrame extends JFrame{
         this.setVisible(true);
     }
 
-    private void prepareComponents() throws Exception {
+    private void prepareComponents() throws Exception, IOException {
         server = new Server();
         worker = new AdminWorker(this);
 
@@ -63,7 +65,11 @@ public class AdminFrame extends JFrame{
                     new Thread(worker).start();
                 } else {
                     onOff.setText("START SERVER");
-                    server.stop();
+                    try {
+                        server.shutdownServer();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                     worker.stop();
                 }
             }
