@@ -1,6 +1,7 @@
 package Admin;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import Database.SystemDatabase;
@@ -10,13 +11,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
 
 public class Server implements Runnable {
-    private static final int PORT = 8001;
+    private static final int API_PORT = 8001;
+    private static final int PORT = 8000;
 
     private static UserDatabase userDB;
     private static SystemDatabase systemDB;
@@ -24,6 +27,7 @@ public class Server implements Runnable {
     private HttpServer APIServer;
     private ConcurrentMap<Integer, ClientThread> clients;
     private ServerSocket socket;
+    private ConcurrentMap<Integer, Boolean> sessionRegistry = new ConcurrentHashMap<Integer,Boolean>();
 
     private volatile boolean active = true;
 
@@ -34,11 +38,12 @@ public class Server implements Runnable {
     }
 
     public void configureAPIServer() throws IOException {
-        
-        //Create an API Server
-        APIServer = HttpServer.create(new InetSocketAddress(PORT), 0);
 
-        //Create a list for contexts that we require username and password authentication on.
+        // Create an API Server
+        APIServer = HttpServer.create(new InetSocketAddress(API_PORT), 0);
+
+        // Create a list for contexts that we require username and password
+        // authentication on.
         ArrayList<HttpContext> secureContexts = new ArrayList<HttpContext>();
 
         secureContexts.add(APIServer.createContext("/api/login", (exchange -> {
@@ -135,16 +140,46 @@ public class Server implements Runnable {
         try {
             configureAPIServer();
             System.out.println("API Server is online at " + APIServer.getAddress());
-            socket = new ServerSocket();
+            socket = new ServerSocket(8000);
             System.out.println("Server Socket is online at " + socket.getInetAddress());
+            initializeSessionRegistry();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         while (active) {
-            
+            try {
+                Socket cSocket = socket.accept();
+                int sessionID = getNextAvailableSession();
+                if(sessionID != -1){
+
+                } else {
+                    
+                }
+
+            } catch (Exception e) {
+
+            }
         }
         System.out.println("Server thread ending");
+    }
+
+    private int getNextAvailableSession(){
+        boolean found = false;
+        int nextSession = -1;
+        for (int i = 0; i <= sessionRegistry.size() && !found; i++) {
+            if(sessionRegistry.get(i) == false){
+                nextSession = i;
+                found = true;
+            }
+        }
+        return nextSession;
+    }
+
+    private void initializeSessionRegistry(){
+        for (int i = 0; i <= Integer.MAX_VALUE; i++) {
+            sessionRegistry.put(i, false);
+        }
     }
 
     public void stop() {
