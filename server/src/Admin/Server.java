@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentMap;
 import Database.SystemDatabase;
 import Database.UserDatabase;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -27,7 +28,7 @@ public class Server implements Runnable {
     private HttpServer APIServer;
     private ConcurrentMap<Integer, ClientThread> clientMap;
     private ServerSocket socket;
-    private ConcurrentMap<Integer, Boolean> sessionRegistry = new ConcurrentHashMap<Integer,Boolean>();
+    private ConcurrentMap<Integer, Boolean> sessionRegistry = new ConcurrentHashMap<Integer, Boolean>();
 
     private volatile boolean active = true;
 
@@ -137,8 +138,8 @@ public class Server implements Runnable {
     @Override
     public void run() {
         System.out.println("Starting the Server");
-        
-        clientMap = new ConcurrentHashMap<Integer,ClientThread>();
+
+        clientMap = new ConcurrentHashMap<Integer, ClientThread>();
 
         try {
             configureAPIServer();
@@ -153,28 +154,31 @@ public class Server implements Runnable {
         while (active) {
             try {
                 Socket cSocket = socket.accept();
+                DataOutputStream toClient = new DataOutputStream(cSocket.getOutputStream());
+
+                // The client will take -1 to mean that their connection request rejected.
                 int sessionID = getNextAvailableSession();
-                if(sessionID == -1){
-                    //TODO alert clients we are max load.
-                } else {
+                toClient.writeInt(sessionID);
+
+                if (sessionID != -1) {
                     ClientThread cThread = new ClientThread(sessionID, cSocket);
                     sessionRegistry.put(sessionID, true);
                     clientMap.put(sessionID, cThread);
                     cThread.start();
                 }
-
             } catch (Exception e) {
 
             }
         }
         System.out.println("Server thread ending");
+
     }
 
-    private int getNextAvailableSession(){
+    private int getNextAvailableSession() {
         boolean found = false;
         int nextSession = -1;
         for (int i = 0; i <= sessionRegistry.size() && !found; i++) {
-            if(sessionRegistry.get(i) == false){
+            if (sessionRegistry.get(i) == false) {
                 nextSession = i;
                 found = true;
             }
@@ -182,7 +186,7 @@ public class Server implements Runnable {
         return nextSession;
     }
 
-    private void initializeSessionRegistry(){
+    private void initializeSessionRegistry() {
         for (int i = 0; i <= Integer.MAX_VALUE; i++) {
             sessionRegistry.put(i, false);
         }
