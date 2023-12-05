@@ -53,7 +53,7 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/read"))
                         .method("GET", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
+                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
@@ -61,7 +61,7 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/write"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
+                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
@@ -69,9 +69,12 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/logout"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic YWRtaW46YWRtaW4=")
+                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
+                break;
+            case REGISTER:
+
                 break;
             default:
                 break;
