@@ -9,11 +9,6 @@ public class UserDatabase extends AbstractSQLConnector{
         super(username, pass);
     }
 
-    @Override
-    public void updateDatabase() {
-
-    }
-
     public void updatePassword(String username, String password) { //INSERTS DISPLAYDATA AT USERNAME
 
         try {

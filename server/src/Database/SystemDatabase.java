@@ -21,12 +21,7 @@ public class SystemDatabase extends AbstractSQLConnector {
 
         return this.getResultSet();
     }
-
-    //updateDatabase required by AbstractSQLConnector
-    @Override
-    public void updateDatabase() { //DOES NOT DO ANYTHING
         
-    }
 
     public void updateDisplayData(String username, String displayData) { //INSERTS DISPLAYDATA AT USERNAME
 

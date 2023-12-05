@@ -32,8 +32,7 @@ public abstract class AbstractSQLConnector implements DatabaseInterface{
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 
-    }
-    
+}
     public abstract void updateDatabase();
 
     public abstract String getResultSet();
