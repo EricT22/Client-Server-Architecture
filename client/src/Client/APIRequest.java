@@ -44,21 +44,21 @@ public class APIRequest {
                 break;
             case READ_DATA:
                 apiReq.request = HttpRequest.newBuilder()
-                        .uri(URI.create(serverIP + "/api/login"))
+                        .uri(URI.create(serverIP + "/api/read"))
                         .method("GET", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization", "Basic YWRtaW46YWRtaW4=")
                         .build();
                 break;
             case WRITE_DATA:
                 apiReq.request = HttpRequest.newBuilder()
-                        .uri(URI.create(serverIP + "/api/login"))
+                        .uri(URI.create(serverIP + "/api/write"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization", "Basic YWRtaW46YWRtaW4=")
                         .build();
                 break;
             case LOGOUT:
                 apiReq.request = HttpRequest.newBuilder()
-                        .uri(URI.create(serverIP + "/api/login"))
+                        .uri(URI.create(serverIP + "/api/logout"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization", "Basic YWRtaW46YWRtaW4=")
                         .build();
