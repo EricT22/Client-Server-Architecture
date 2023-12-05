@@ -14,14 +14,13 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
 
 public class Server extends Thread {
-    private static final int API_PORT = 8001;
+    private static final int API_PORT = 8080;
     private static final int PORT = 8000;
 
     private static UserDatabase userDB;
@@ -37,13 +36,9 @@ public class Server extends Thread {
     private EmailDispatcher emailDispatch;
 
     public Server() throws IOException {
-        configureAPIServer();
     }
 
     public void configureAPIServer() throws IOException {
-
-        // Create an API Server
-        APIServer = HttpServer.create(new InetSocketAddress(API_PORT), 0);
 
         // Create a list for contexts that we require username and password
         // authentication on.
@@ -132,7 +127,6 @@ public class Server extends Thread {
                 return true;
             };
         }));
-
         APIServer.setExecutor(null);
     }
 
@@ -143,14 +137,18 @@ public class Server extends Thread {
         clientMap = new ConcurrentHashMap<Integer, ClientThread>();
 
         try {
+            APIServer = HttpServer.create(new InetSocketAddress(API_PORT), 0);
+            configureAPIServer();
             APIServer.start();
             System.out.println("API Server is online at " + APIServer.getAddress());
-            socket = new ServerSocket(8000);
+            socket = new ServerSocket(PORT);
             System.out.println("Server Socket is online at " + socket.getInetAddress());
             initializeSessionRegistry();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        active.set(true);
 
         while (active.get()) {
             try {
@@ -159,17 +157,18 @@ public class Server extends Thread {
                 // The client will take -1 to mean that their connection request rejected.
                 int sessionID = getNextAvailableSession();
                 toClient.writeInt(sessionID);
+                System.out
+                        .println(sessionID != -1 ? "Session Created ID" + sessionID : "Server Full, Session Rejected");
                 if (sessionID != -1) {
                     ClientThread cThread = new ClientThread(sessionID, cSocket);
                     sessionRegistry.put(sessionID, true);
                     clientMap.put(sessionID, cThread);
-                    // cThread.start();
+                    cThread.start();
                 }
             } catch (Exception e) {
             }
         }
         System.out.println("Server thread ending");
-
     }
 
     private int getNextAvailableSession() {
@@ -203,5 +202,7 @@ public class Server extends Thread {
             }
         });
         active.set(false);
+        APIServer.stop(0);
+        System.out.println("Server stopped.");
     }
 }
