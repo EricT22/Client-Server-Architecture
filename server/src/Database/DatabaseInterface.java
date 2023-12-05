@@ -1,7 +1,9 @@
 package Database;
 
 public interface DatabaseInterface {
-    public void updateDatabase();
-    
-    public String getResultSet();
+    // Method to update the database
+    void updateDatabase();
+
+    // Method to get the result set as a String
+    String getResultSet();
 }
