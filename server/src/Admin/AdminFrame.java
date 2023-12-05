@@ -12,9 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 public class AdminFrame extends JFrame {
-    private Server server;
+    public Server server;
 
-    private JTextArea queries;
+    public JTextArea queries;
     private JButton onOff;
 
     private AdminWorker worker;
