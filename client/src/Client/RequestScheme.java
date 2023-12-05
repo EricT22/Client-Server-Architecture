@@ -5,5 +5,6 @@ public enum RequestScheme {
     ACCT_RECOVERY,
     WRITE_DATA,
     READ_DATA,
-    LOGOUT
+    LOGOUT,
+    REGISTER
 }
