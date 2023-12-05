@@ -20,10 +20,15 @@ public class ClientThread extends Thread {
         socket.setSoTimeout(300000);
     }
 
-    public void stopClient() throws IOException {
+    public void stopClient() {
         System.out.println("Attempting to stop Client Thread on Session ID" + sessionID);
         active.set(false);
-        socket.close();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            // e.printStackTrace();
+        }
+        System.out.println("Client Thread for Session ID" + sessionID + " ended");
     }
 
     @Override
@@ -35,19 +40,12 @@ public class ClientThread extends Thread {
                 int status = (new DataInputStream(socket.getInputStream())).read();
                 lastHeartbeat = System.currentTimeMillis();
                 System.out.println("Heartbeat detected for Session ID" + sessionID);
-            } catch (SocketTimeoutException e) {
+            } catch (Exception e) {
                 active.set(false);
                 System.out.println("Client connection on ID" + sessionID + " timed out");
-                try {
-                    stopClient();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+                stopClient();
             }
         }
-        System.out.println("Client Thread for Session ID" + sessionID + " ended");
     }
 
     public long getTimeSinceSeen() {
