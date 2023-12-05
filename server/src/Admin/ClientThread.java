@@ -4,21 +4,19 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientThread extends Thread {
     private int sessionID;
     private long lastHeartbeat = -1;
     private Socket socket;
-    private int sessionTimeout = 1000;
+    private int sessionTimeout = 60000;
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
     public ClientThread(int id, Socket iSocket) throws SocketException {
         sessionID = id;
         socket = iSocket;
-        socket.setSoTimeout(sessionTimeout);
     }
 
     public void stopClient() {
@@ -35,7 +33,10 @@ public class ClientThread extends Thread {
     @Override
     public void run() {
         active.set(true);
-
+        try {
+            socket.setSoTimeout(sessionTimeout);
+        } catch (SocketException e) {
+        }
         while (active.get()) {
             try {
                 int status = (new DataInputStream(socket.getInputStream())).read();

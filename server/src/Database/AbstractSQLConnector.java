@@ -35,7 +35,5 @@ public abstract class AbstractSQLConnector implements DatabaseInterface {
 
     }
 
-    public abstract void updateDatabase();
-
     public abstract String getResultSet();
 }
