@@ -87,7 +87,9 @@ public class ClientGUI extends JFrame {
             System.out.println("Connecting to server " + ip + ":" + SOCKET_PORT);
             server = new Socket();
             server.connect(new InetSocketAddress(ip, SOCKET_PORT), 1000);
+            System.out.println("Got here");
             sessionID = (new DataInputStream(server.getInputStream())).readInt();
+            System.out.println("Got here too.");
             APIRequest.setSessionID(sessionID);
         } catch (Exception e) {
             return false;

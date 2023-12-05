@@ -212,15 +212,20 @@ public class Server extends Thread {
         System.out.println("Server thread ending");
     }
 
-    private int getNextAvailableSession() {
+    public int getNextAvailableSession() {
+        System.out.println("Searching for a new Session ID w/ Max of " + clientMap.size());
         boolean found = false;
         int nextSession = -1;
-        for (int i = 0; i <= clientMap.size() && !found; i++) {
-            if (!clientMap.get(i).isActive()) {
+        for (int i = 0; i < clientMap.size() && !found; i++) {
+            if (!clientMap.get(i).isActive() || clientMap.get(i) == null) {
                 nextSession = i;
                 found = true;
             }
         }
+        if (clientMap.size() == 0) {
+            nextSession = 0;
+        }
+        System.out.println("Allocating a new Session ID " + nextSession);
         return nextSession;
     }
 
