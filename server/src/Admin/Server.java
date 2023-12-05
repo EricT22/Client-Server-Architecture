@@ -30,7 +30,6 @@ public class Server extends Thread {
     private HttpServer APIServer;
     private ConcurrentMap<Integer, ClientThread> clientMap;
     private ServerSocket socket;
-    private ConcurrentMap<Integer, Boolean> sessionRegistry = new ConcurrentHashMap<Integer, Boolean>();
 
     private final AtomicBoolean active = new AtomicBoolean(true);
 
@@ -50,7 +49,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (sessionRegistry.get(sessionID)) {
+                if (clientMap.get(sessionID) != null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Add credential checking and failure response, update corresponding
@@ -75,7 +74,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (sessionRegistry.get(sessionID)) {
+                if (clientMap.get(sessionID) != null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Lookup user email with parsed username from request, utilize email
@@ -96,7 +95,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (sessionRegistry.get(sessionID)) {
+                if (clientMap.get(sessionID) != null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     System.out.println("Session " + sessionID + " Registered New Account");
@@ -109,7 +108,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (sessionRegistry.get(sessionID)) {
+                if (clientMap.get(sessionID) != null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Finish the BasicAuthenticator
@@ -129,7 +128,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (sessionRegistry.get(sessionID)) {
+                if (clientMap.get(sessionID) != null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Finish the BasicAuthenticator, return data to user
@@ -149,7 +148,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (sessionRegistry.get(sessionID)) {
+                if (clientMap.get(sessionID) != null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Finish the BasicAuthenticator, update corresponding client thread
@@ -187,7 +186,6 @@ public class Server extends Thread {
             System.out.println("API Server is online at " + APIServer.getAddress());
             socket = new ServerSocket(PORT);
             System.out.println("Server Socket is online at " + socket.getInetAddress());
-            initializeSessionRegistry();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -205,7 +203,6 @@ public class Server extends Thread {
                         .println(sessionID != -1 ? "Session Created ID " + sessionID : "Server Full, Session Rejected");
                 if (sessionID != -1) {
                     ClientThread cThread = new ClientThread(sessionID, cSocket);
-                    sessionRegistry.put(sessionID, true);
                     clientMap.put(sessionID, cThread);
                     cThread.start();
                 }
@@ -218,21 +215,13 @@ public class Server extends Thread {
     private int getNextAvailableSession() {
         boolean found = false;
         int nextSession = -1;
-        for (int i = 0; i <= sessionRegistry.size() && !found; i++) {
-            if (sessionRegistry.get(i) == false) {
+        for (int i = 0; i <= clientMap.size() && !found; i++) {
+            if (!clientMap.get(i).isActive()) {
                 nextSession = i;
                 found = true;
             }
         }
         return nextSession;
-    }
-
-    private void initializeSessionRegistry() {
-        System.out.println("Initializing Session Registry");
-        for (int i = 0; i <= 999999; i++) {
-            sessionRegistry.put(i, false);
-        }
-        System.out.println("Session Registry Initialized");
     }
 
     public int getActiveUsers() {
