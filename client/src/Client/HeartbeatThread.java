@@ -19,7 +19,7 @@ public class HeartbeatThread extends Thread {
 
         while (active.get()) {
             try {
-                (new DataOutputStream(socket.getOutputStream())).writeInt(1);
+                (new DataOutputStream(socket.getOutputStream())).writeInt(200);
                 Thread.sleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();
