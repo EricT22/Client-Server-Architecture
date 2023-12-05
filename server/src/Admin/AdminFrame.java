@@ -67,7 +67,7 @@ public class AdminFrame extends JFrame {
                     try {
                         server.shutdownServer();
                     } catch (Exception e1) {
-                        e1.printStackTrace();
+                        // e1.printStackTrace();
                     }
                     worker.stop();
                 }
@@ -81,7 +81,7 @@ public class AdminFrame extends JFrame {
         try {
             new AdminFrame();
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
