@@ -1,6 +1,7 @@
 package Admin;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -189,6 +190,16 @@ public class Server extends Thread {
             sessionRegistry.put(i, false);
         }
         System.out.println("Session Registry Initialized");
+    }
+
+    public int getActiveUsers(){
+        int count = 0;
+        for(Map.Entry<Integer,Boolean> entry : sessionRegistry.entrySet()){
+            if(entry.getValue()){
+                count++;
+            }
+        }
+        return count;
     }
 
     public void shutdownServer() throws Exception {
