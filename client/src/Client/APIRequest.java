@@ -14,9 +14,14 @@ public class APIRequest {
     private String payload;
     private CompletableFuture<HttpResponse<String>> response = null;
     private HttpRequest request = null;
+    private static int sessionID = -1;
 
     public static void setIP(String ip) {
         serverIP = ip;
+    }
+
+    public static void setSessionID(int i){
+        sessionID = i;
     }
 
     public APIRequest(RequestScheme iScheme, String data) {
@@ -34,12 +39,14 @@ public class APIRequest {
                         .uri(URI.create("http://" + serverIP + "/api/login"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
+                        .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
             case ACCT_RECOVERY:
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/recovery"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
+                        .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
             case READ_DATA:
@@ -47,6 +54,7 @@ public class APIRequest {
                         .uri(URI.create(serverIP + "/api/read"))
                         .method("GET", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization", "Basic YWRtaW46YWRtaW4=")
+                        .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
             case WRITE_DATA:
@@ -54,6 +62,7 @@ public class APIRequest {
                         .uri(URI.create(serverIP + "/api/write"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization", "Basic YWRtaW46YWRtaW4=")
+                        .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
             case LOGOUT:
@@ -61,6 +70,7 @@ public class APIRequest {
                         .uri(URI.create(serverIP + "/api/logout"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization", "Basic YWRtaW46YWRtaW4=")
+                        .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
             default:

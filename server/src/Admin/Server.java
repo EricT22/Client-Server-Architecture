@@ -1,6 +1,7 @@
 package Admin;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,6 +49,10 @@ public class Server extends Thread {
             if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
+                int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
+                if(sessionRegistry.get(sessionID)){
+                    exchange.sendResponseHeaders(403, -1);
+                }
                 // TODO Add credential checking and failure response, update corresponding
                 // client thread
                 String responseText = "Logged in: "
@@ -67,6 +72,10 @@ public class Server extends Thread {
             if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
+                int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
+                if(sessionRegistry.get(sessionID)){
+                    exchange.sendResponseHeaders(403, -1);
+                }
                 // TODO Lookup user email with parsed username from request, utilize email
                 // dispatcher
                 String responseText = "Recovery email sent to the specified user.";
@@ -82,6 +91,10 @@ public class Server extends Thread {
             if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
+                int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
+                if(sessionRegistry.get(sessionID)){
+                    exchange.sendResponseHeaders(403, -1);
+                }
                 // TODO Finish the BasicAuthenticator
                 String responseText = "Data written to database";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
@@ -96,6 +109,10 @@ public class Server extends Thread {
             if (!"GET".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
+                int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
+                if(sessionRegistry.get(sessionID)){
+                    exchange.sendResponseHeaders(403, -1);
+                }
                 // TODO Finish the BasicAuthenticator, return data to user
                 String responseText = "Data read from database";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
@@ -110,6 +127,10 @@ public class Server extends Thread {
             if (!"POST".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(405, -1);
             } else {
+                int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
+                if(sessionRegistry.get(sessionID)){
+                    exchange.sendResponseHeaders(403, -1);
+                }
                 // TODO Finish the BasicAuthenticator, update corresponding client thread
                 String responseText = "Succesfully logged out.";
                 exchange.sendResponseHeaders(200, responseText.getBytes().length);
@@ -191,15 +212,15 @@ public class Server extends Thread {
         System.out.println("Session Registry Initialized");
     }
 
-    public void shutdownServer() throws IOException {
+    public int getActiveUsers(){
+        return ClientThread.getConnectionCount();
+    }
+
+    public void shutdownServer() throws Exception {
         System.out.println("Attempting to stop server.");
         socket.close();
         clientMap.forEach((key, value) -> {
-            try {
-                value.getSocket().close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            value.stopClient();
         });
         active.set(false);
         APIServer.stop(0);

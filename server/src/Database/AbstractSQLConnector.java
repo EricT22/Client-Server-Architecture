@@ -1,26 +1,39 @@
 package Database;
 
-// SQL jdbc not added to library yet
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public abstract class AbstractSQLConnector implements DatabaseInterface {
+    protected Connection connection = null;
+    protected Statement statement = null;
+    protected ResultSet resultSet = null;
+    protected String url = "jdbc:mysql://127.0.0.1:3306/clientServerApp";
 
-    //TODO Add this library
-    // private Connection connection;
-    // private Statement stmt;
-    // private ResultSet rset;
+    public AbstractSQLConnector(String username, String pass) {
 
-    private String url;
+        try {
+            connection = DriverManager.getConnection(url, username, pass);
 
-    public AbstractSQLConnector(String username, String password){
+            statement = connection.createStatement();
+
+    resultSet = statement.executeQuery("SELECT VERSION()");
+    if (resultSet.next()){
+
+        System.out.println("MySQL version: " + resultSet.getString(1) + "\n=====================\n");
+    }
+
+
+    }
+    catch(SQLException ex) {
+    System.out.println("SQLException: " + ex.getMessage());
+    System.out.println("SQLState: " + ex.getSQLState());
+    System.out.println("VendorError: " + ex.getErrorCode());
+    }
 
     }
 
-    @Override
-    public void updateDatabase(){
-
-    }
-
-    @Override
-    public String getResultSet(){
-        return "";
-    }
+    public abstract String getResultSet();
 }

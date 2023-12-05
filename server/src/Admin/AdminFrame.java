@@ -11,18 +11,18 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
-public class AdminFrame extends JFrame{
-    private Server server;
+public class AdminFrame extends JFrame {
+    public Server server;
 
-    private JTextArea queries;
+    public JTextArea queries;
     private JButton onOff;
 
     private AdminWorker worker;
 
     private final int WIDTH = 1000;
-    private final int HEIGHT = 800; 
+    private final int HEIGHT = 800;
 
-    public AdminFrame() throws Exception{
+    public AdminFrame() throws Exception {
         super("Admin Console");
 
         this.setSize(WIDTH, HEIGHT);
@@ -32,11 +32,10 @@ public class AdminFrame extends JFrame{
 
         this.setLayout(new BorderLayout(0, 0));
 
-        
         this.setResizable(false);
 
         prepareComponents();
-        
+
         this.add(queries, BorderLayout.CENTER);
         this.add(onOff, BorderLayout.SOUTH);
 
@@ -49,7 +48,7 @@ public class AdminFrame extends JFrame{
 
         queries = new JTextArea("", WIDTH, HEIGHT);
         queries.setBackground(Color.BLACK);
-        queries.setFont(new Font("Times", Font.PLAIN, 13));
+        queries.setFont(new Font("Times", Font.PLAIN, 25));
         queries.setForeground(Color.GREEN);
 
         onOff = new JButton("START SERVER");
@@ -58,7 +57,7 @@ public class AdminFrame extends JFrame{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (onOff.getText().equals("START SERVER")){
+                if (onOff.getText().equals("START SERVER")) {
                     onOff.setText("STOP SERVER");
 
                     new Thread(server).start();
@@ -67,13 +66,13 @@ public class AdminFrame extends JFrame{
                     onOff.setText("START SERVER");
                     try {
                         server.shutdownServer();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+                    } catch (Exception e1) {
+                        // e1.printStackTrace();
                     }
                     worker.stop();
                 }
             }
-            
+
         });
 
     }
@@ -82,8 +81,8 @@ public class AdminFrame extends JFrame{
         try {
             new AdminFrame();
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
-    
+
 }
