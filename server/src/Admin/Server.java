@@ -196,7 +196,7 @@ public class Server extends Thread {
                 int sessionID = getNextAvailableSession();
                 toClient.writeInt(sessionID);
                 System.out
-                        .println(sessionID != -1 ? "Session Created ID" + sessionID : "Server Full, Session Rejected");
+                        .println(sessionID != -1 ? "Session Created ID " + sessionID : "Server Full, Session Rejected");
                 if (sessionID != -1) {
                     ClientThread cThread = new ClientThread(sessionID, cSocket);
                     sessionRegistry.put(sessionID, true);

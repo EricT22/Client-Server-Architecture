@@ -33,7 +33,7 @@ public class ClientThread extends Thread {
             // e.printStackTrace();
         }
         connectedCount--;
-        System.out.println("Client Thread for Session ID" + sessionID + " ended");
+        System.out.println("Client Thread for Session ID " + sessionID + " ended");
     }
 
     @Override
@@ -48,10 +48,9 @@ public class ClientThread extends Thread {
             try {
                 int status = (new DataInputStream(socket.getInputStream())).read();
                 lastHeartbeat = System.currentTimeMillis();
-                System.out.println("Heartbeat detected for Session ID" + sessionID);
             } catch (Exception e) {
                 active.set(false);
-                System.out.println("Client connection on ID" + sessionID + " timed out");
+                System.out.println("Client connection on ID " + sessionID + " timed out");
                 stopClient();
             }
         }
