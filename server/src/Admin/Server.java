@@ -50,20 +50,21 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if(sessionRegistry.get(sessionID)){
+                if (sessionRegistry.get(sessionID)) {
                     exchange.sendResponseHeaders(403, -1);
+                } else {
+                    // TODO Add credential checking and failure response, update corresponding
+                    // client thread
+                    String responseText = "Logged in: "
+                            + exchange.getRequestHeaders().getFirst("Authorization")
+                                    .substring(exchange.getRequestHeaders().getFirst("Authorization").indexOf(
+                                            " ") + 1);
+                    System.out.println(responseText);
+                    exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                    OutputStream output = exchange.getResponseBody();
+                    output.write(responseText.getBytes());
+                    output.flush();
                 }
-                // TODO Add credential checking and failure response, update corresponding
-                // client thread
-                String responseText = "Logged in: "
-                        + exchange.getRequestHeaders().getFirst("Authorization")
-                                .substring(exchange.getRequestHeaders().getFirst("Authorization").indexOf(
-                                        " ") + 1);
-                System.out.println(responseText);
-                exchange.sendResponseHeaders(200, responseText.getBytes().length);
-                OutputStream output = exchange.getResponseBody();
-                output.write(responseText.getBytes());
-                output.flush();
             }
             exchange.close();
         })));
@@ -73,18 +74,31 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if(sessionRegistry.get(sessionID)){
+                if (sessionRegistry.get(sessionID)) {
                     exchange.sendResponseHeaders(403, -1);
+                } else {
+                    // TODO Lookup user email with parsed username from request, utilize email
+                    // dispatcher
+                    String responseText = "Recovery email sent to the specified user.";
+                    exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                    OutputStream output = exchange.getResponseBody();
+                    output.write(responseText.getBytes());
+                    output.flush();
                 }
-                // TODO Lookup user email with parsed username from request, utilize email
-                // dispatcher
-                String responseText = "Recovery email sent to the specified user.";
-                exchange.sendResponseHeaders(200, responseText.getBytes().length);
-                OutputStream output = exchange.getResponseBody();
-                output.write(responseText.getBytes());
-                output.flush();
             }
             exchange.close();
+        }));
+
+        APIServer.createContext("/api/register", (exchange -> {
+            if (!"POST".equals(exchange.getRequestMethod())) {
+                exchange.sendResponseHeaders(405, -1);
+            } else {
+                int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
+                if (sessionRegistry.get(sessionID)) {
+                    exchange.sendResponseHeaders(403, -1);
+                } else {
+                }
+            }
         }));
 
         secureContexts.add(APIServer.createContext("/api/write", (exchange -> {
@@ -92,15 +106,16 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if(sessionRegistry.get(sessionID)){
+                if (sessionRegistry.get(sessionID)) {
                     exchange.sendResponseHeaders(403, -1);
+                } else {
+                    // TODO Finish the BasicAuthenticator
+                    String responseText = "Data written to database";
+                    exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                    OutputStream output = exchange.getResponseBody();
+                    output.write(responseText.getBytes());
+                    output.flush();
                 }
-                // TODO Finish the BasicAuthenticator
-                String responseText = "Data written to database";
-                exchange.sendResponseHeaders(200, responseText.getBytes().length);
-                OutputStream output = exchange.getResponseBody();
-                output.write(responseText.getBytes());
-                output.flush();
             }
             exchange.close();
         })));
@@ -110,15 +125,16 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if(sessionRegistry.get(sessionID)){
+                if (sessionRegistry.get(sessionID)) {
                     exchange.sendResponseHeaders(403, -1);
+                } else {
+                    // TODO Finish the BasicAuthenticator, return data to user
+                    String responseText = "Data read from database";
+                    exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                    OutputStream output = exchange.getResponseBody();
+                    output.write(responseText.getBytes());
+                    output.flush();
                 }
-                // TODO Finish the BasicAuthenticator, return data to user
-                String responseText = "Data read from database";
-                exchange.sendResponseHeaders(200, responseText.getBytes().length);
-                OutputStream output = exchange.getResponseBody();
-                output.write(responseText.getBytes());
-                output.flush();
             }
             exchange.close();
         })));
@@ -128,15 +144,16 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if(sessionRegistry.get(sessionID)){
+                if (sessionRegistry.get(sessionID)) {
                     exchange.sendResponseHeaders(403, -1);
+                } else {
+                    // TODO Finish the BasicAuthenticator, update corresponding client thread
+                    String responseText = "Succesfully logged out.";
+                    exchange.sendResponseHeaders(200, responseText.getBytes().length);
+                    OutputStream output = exchange.getResponseBody();
+                    output.write(responseText.getBytes());
+                    output.flush();
                 }
-                // TODO Finish the BasicAuthenticator, update corresponding client thread
-                String responseText = "Succesfully logged out.";
-                exchange.sendResponseHeaders(200, responseText.getBytes().length);
-                OutputStream output = exchange.getResponseBody();
-                output.write(responseText.getBytes());
-                output.flush();
             }
             exchange.close();
         })));
@@ -212,7 +229,7 @@ public class Server extends Thread {
         System.out.println("Session Registry Initialized");
     }
 
-    public int getActiveUsers(){
+    public int getActiveUsers() {
         return ClientThread.getConnectionCount();
     }
 
