@@ -104,6 +104,7 @@ public class APIRequest {
         }
         response = HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
         if (response.get().statusCode() != 200) {
+            System.out.println("Error");
             System.out.println(response.get().body());
             return false;
         }
