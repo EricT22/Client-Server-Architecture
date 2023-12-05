@@ -23,7 +23,24 @@ public class AdminWorker implements Runnable{
     }
 
     public void updateData(){
-        aFrame.queries.setText("Active Users: " + aFrame.server.getActiveUsers());
+        String queries = "";
+
+        // num connected users
+        queries += "Active Users: " + aFrame.server.getActiveUsers();
+        
+        // num logged in users
+        queries += "";
+
+        // which users are logged in (names)
+        queries += "";
+
+        // which users are locked out (names)
+        queries += "";
+
+        // num registered users
+        queries += "";
+
+        aFrame.queries.setText(queries);
     }
 
     public void stop() {

@@ -48,7 +48,7 @@ public class AdminFrame extends JFrame {
 
         queries = new JTextArea("", WIDTH, HEIGHT);
         queries.setBackground(Color.BLACK);
-        queries.setFont(new Font("Times", Font.PLAIN, 13));
+        queries.setFont(new Font("Times", Font.PLAIN, 25));
         queries.setForeground(Color.GREEN);
 
         onOff = new JButton("START SERVER");
