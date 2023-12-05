@@ -193,13 +193,7 @@ public class Server extends Thread {
     }
 
     public int getActiveUsers(){
-        int count = 0;
-        for(Map.Entry<Integer,Boolean> entry : sessionRegistry.entrySet()){
-            if(entry.getValue()){
-                count++;
-            }
-        }
-        return count;
+        return ClientThread.getConnectionCount();
     }
 
     public void shutdownServer() throws Exception {

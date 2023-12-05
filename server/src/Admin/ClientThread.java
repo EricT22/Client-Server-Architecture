@@ -11,8 +11,13 @@ public class ClientThread extends Thread {
     private long lastHeartbeat = -1;
     private Socket socket;
     private int sessionTimeout = 60000;
+    private static int connectedCount = 0;
 
     private AtomicBoolean active = new AtomicBoolean(false);
+
+    public static int getConnectionCount(){
+        return connectedCount;
+    }
 
     public ClientThread(int id, Socket iSocket) throws SocketException {
         sessionID = id;
@@ -27,6 +32,7 @@ public class ClientThread extends Thread {
         } catch (IOException e) {
             // e.printStackTrace();
         }
+        connectedCount--;
         System.out.println("Client Thread for Session ID" + sessionID + " ended");
     }
 
@@ -37,6 +43,7 @@ public class ClientThread extends Thread {
             socket.setSoTimeout(sessionTimeout);
         } catch (SocketException e) {
         }
+        connectedCount++;
         while (active.get()) {
             try {
                 int status = (new DataInputStream(socket.getInputStream())).read();
