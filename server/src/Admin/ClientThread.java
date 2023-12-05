@@ -11,13 +11,14 @@ public class ClientThread extends Thread {
     private int sessionID;
     private long lastHeartbeat = -1;
     private Socket socket;
+    private int sessionTimeout = 1000;
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
     public ClientThread(int id, Socket iSocket) throws SocketException {
         sessionID = id;
         socket = iSocket;
-        socket.setSoTimeout(300000);
+        socket.setSoTimeout(sessionTimeout);
     }
 
     public void stopClient() {
