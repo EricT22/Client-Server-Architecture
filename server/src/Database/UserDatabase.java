@@ -78,12 +78,5 @@ public class UserDatabase extends AbstractSQLConnector{
         }
         return returnString;
     }
-
-    @Override
-    public void updateDatabase() {
-        // TODO Auto-generated method stub
-        
-    }
-    
 }
 
