@@ -279,6 +279,7 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    //TODO Register account request
                     swapToPage("CR ACCT");
                 }
 
@@ -355,6 +356,7 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    //TODO Implement logout request
                     swapToPage("LOGIN");
                 }
 
