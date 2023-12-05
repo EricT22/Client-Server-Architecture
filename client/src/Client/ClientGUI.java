@@ -29,7 +29,7 @@ import java.util.Scanner;
 public class ClientGUI extends JFrame {
     private Socket server;
 
-    private String ipAddress = "";
+    // private String ipAddress = "";
     private int API_PORT = 8080;
     private int SOCKET_PORT = 8000;
 
@@ -96,6 +96,7 @@ public class ClientGUI extends JFrame {
             return false;
         }
         heartbeat = new HeartbeatThread(server);
+        heartbeat.run();
         return true;
     }
 
