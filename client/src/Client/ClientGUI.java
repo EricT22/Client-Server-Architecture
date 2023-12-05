@@ -91,12 +91,12 @@ public class ClientGUI extends JFrame {
             server.connect(new InetSocketAddress(ip, SOCKET_PORT), 1000);
             sessionID = (new DataInputStream(server.getInputStream())).readInt();
             APIRequest.setSessionID(sessionID);
-            System.out.println("Session ID" + sessionID);
         } catch (Exception e) {
             return false;
         }
         heartbeat = new HeartbeatThread(server);
-        heartbeat.run();
+        heartbeat.start();
+        System.out.println("Connected to Server w/ Session ID" + sessionID);
         return true;
     }
 
