@@ -1,7 +1,6 @@
 package Client;
 
-// TODO: make layout look somewhat more decent
-
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import java.awt.CardLayout;
@@ -13,6 +12,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -20,26 +21,36 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JTextArea;
 
-public class ClientGUI extends JFrame{
-    private JTextArea field;
-    // one or more buttons
+import java.util.regex.Pattern;
 
+import java.util.Scanner;
+
+public class ClientGUI extends JFrame {
     private Socket server;
 
-    private String ipAddress;
+    private String ipAddress = "";
+    private int API_PORT = 8080;
+    private int SOCKET_PORT = 8000;
 
     private HeartbeatThread heartbeat;
 
     private int sessionID;
 
     private final int WIDTH = 1000;
-    private final int HEIGHT = 800; 
+    private final int HEIGHT = 800;
+
+    // TODO: determine if we need special chars, if we do, uncomment the code below
+    private final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])"
+            + /* (?=.*[@#$%^&+=]) */ "(?=\\S+$).{8,}$";
+    private Pattern passPattern = Pattern.compile(PASSWORD_REGEX);
+
+    private final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
 
     private JPanel container;
 
-    public ClientGUI(){
+    public ClientGUI() {
         super("Client");
 
         this.setSize(WIDTH, HEIGHT);
@@ -48,7 +59,7 @@ public class ClientGUI extends JFrame{
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout(0, 0));
         this.setResizable(false);
-        
+
         ConnectPanel connect = new ConnectPanel();
         LoginPanel login = new LoginPanel();
         MainPanel main = new MainPanel();
@@ -59,32 +70,43 @@ public class ClientGUI extends JFrame{
         container.add(login, "LOGIN");
         container.add(main, "MAIN");
         container.add(newAcct, "CR ACCT");
-        
 
         this.add(container, BorderLayout.CENTER);
 
         this.setVisible(true);
     }
 
-    private void displayImage(){
+    private void displayImage() {
         // TODO: implement
     }
 
-    private int connectToServer(String ip){
-        // TODO: implement
-        return 0;
+    private boolean connectToServer(String ip) {
+        if(ip.trim().equals("")){
+            return false;
+        }
+        APIRequest.setIP(ip + ":" + Integer.toString(API_PORT));
+        try {
+            System.out.println("Connecting to server " + ip + ":" + SOCKET_PORT);
+            server = new Socket();
+            server.connect(new InetSocketAddress(ip, SOCKET_PORT), 1000);
+            System.out.println("Session ID" + (new DataInputStream(server.getInputStream())).readInt());
+        } catch (Exception e) {
+            return false;
+        }
+        heartbeat = new HeartbeatThread(server);
+        return true;
     }
 
-    private void startHeartbeat(String s){
-        // TODO: implement
+    private boolean checkPasswordForm(String password) {
+        return passPattern.matcher(password).matches();
     }
 
-    private void stopHeartbeat(){
-        // TODO: implement
+    private boolean checkEmailForm(String email) {
+        return emailPattern.matcher(email).matches();
     }
-    
-    private void swapToPage(String pagename){
-        CardLayout cl = (CardLayout)container.getLayout();
+
+    private void swapToPage(String pagename) {
+        CardLayout cl = (CardLayout) container.getLayout();
         cl.show(container, pagename);
     }
 
@@ -97,11 +119,11 @@ public class ClientGUI extends JFrame{
             super();
 
             this.setBackground(Color.BLACK);
-            
+
             prepareComponents();
 
             this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 200));
-            
+
             this.add(ipLabel);
             this.add(ipField);
             this.add(connectButton);
@@ -121,22 +143,22 @@ public class ClientGUI extends JFrame{
             connectButton = new JButton("CONNECT");
             connectButton.setFont(new Font("Arial", Font.PLAIN, 50));
             connectButton.addActionListener(new ActionListener() {
-
+                // TODO connect to server socket here
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (connectToServer(ipField.getText()) == -1){
+                    if (!connectToServer(ipField.getText())) {
                         ipField.setText("404: Server not Found");
                     } else {
                         swapToPage("LOGIN");
                     }
                 }
-                
+
             });
 
         }
 
         @Override
-        public Dimension getPreferredSize(){
+        public Dimension getPreferredSize() {
             return new Dimension(WIDTH, HEIGHT);
         }
     }
@@ -155,38 +177,47 @@ public class ClientGUI extends JFrame{
             super();
 
             this.setBackground(Color.BLACK);
-            
+
             prepareComponents();
 
-            
-            this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
-            
-            this.add(loginLabel);
-            this.add(Box.createRigidArea(new Dimension(0, 300)));
-            this.add(userLabel);
-            this.add(Box.createRigidArea(new Dimension(50, 0)));
-            this.add(userField);
-            this.add(Box.createRigidArea(new Dimension(250, 0)));
-            this.add(passLabel);
-            this.add(Box.createRigidArea(new Dimension(50, 0)));
-            this.add(passField);
-            this.add(Box.createRigidArea(new Dimension(250, 0)));
+            this.setLayout(new BorderLayout());
+
+            JPanel mainLabelPanel = new JPanel();
+            mainLabelPanel.setBackground(Color.BLACK);
+            mainLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            mainLabelPanel.add(loginLabel);
+            mainLabelPanel.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(mainLabelPanel, BorderLayout.NORTH);
+
+            JPanel contentPanel = new JPanel();
+            contentPanel.setBackground(Color.BLACK);
+            contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            contentPanel.add(userLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(58, 0)));
+            contentPanel.add(userField);
+            contentPanel.add(passLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+            contentPanel.add(passField);
+            this.add(contentPanel, BorderLayout.CENTER);
 
             JPanel buttons = new JPanel();
             buttons.setBackground(Color.BLACK);
-            buttons.setLayout(new GridLayout(1, 3, 10, 0));
+            buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
             buttons.add(disconnectButton);
             buttons.add(loginButton);
             buttons.add(createAcctButton);
-            this.add(buttons);
-            this.add(Box.createRigidArea(new Dimension(0, 200)));
+            buttons.add(Box.createRigidArea(new Dimension(0, 350)));
+            this.add(buttons, BorderLayout.SOUTH);
+
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.WEST);
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.EAST);
         }
 
         private void prepareComponents() {
             loginLabel = new JLabel("                         LOGIN                         ");
             loginLabel.setFont(new Font("Arial", Font.PLAIN, 50));
             loginLabel.setForeground(Color.WHITE);
-            
+
             userLabel = new JLabel("USERNAME");
             userLabel.setFont(new Font("Arial", Font.PLAIN, 35));
             userLabel.setForeground(Color.WHITE);
@@ -210,13 +241,13 @@ public class ClientGUI extends JFrame{
             disconnectButton = new JButton("Disconnect");
             disconnectButton.setFont(new Font("Arial", Font.PLAIN, 25));
             disconnectButton.addActionListener(new ActionListener() {
-
+                // TODO End Socket Connetion here. Stop heartbeat.
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    stopHeartbeat();
+                    heartbeat.stopHeartbeat();
                     swapToPage("CONNECT");
                 }
-                
+
             });
 
             loginButton = new JButton("Login");
@@ -225,15 +256,25 @@ public class ClientGUI extends JFrame{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (/*TODO:user and password combo correct */ true)
+                    // TODO Eventually pass the session id that we receive when socket established
+                    // in data
+                    APIRequest loginRequest = APIRequest.makeRequest(RequestScheme.LOGIN,
+                            userField.getText() + ":" + passField.getText());
+                    boolean valid = false;
+                    try {
+                        valid = loginRequest.execute();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    if (/* TODO:user and password combo correct */ valid)
                         swapToPage("MAIN");
                     // else if (loginCounter == 3){
-                    //     acct recov pop up
+                    // acct recov pop up
                     // } else {
-                    //     loginCounter++;
+                    // loginCounter++;
                     // }
                 }
-                
+
             });
 
             createAcctButton = new JButton("Create Account");
@@ -244,12 +285,12 @@ public class ClientGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     swapToPage("CR ACCT");
                 }
-                
+
             });
         }
 
         @Override
-        public Dimension getPreferredSize(){
+        public Dimension getPreferredSize() {
             return new Dimension(WIDTH, HEIGHT);
         }
     }
@@ -265,25 +306,32 @@ public class ClientGUI extends JFrame{
             super();
 
             this.setBackground(Color.BLACK);
-            
+
             prepareComponents();
 
             // TODO: needs layout fixing
 
-            this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
-            
-            this.add(dataField);
-            this.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.setLayout(new BorderLayout());
+
+            JPanel dataPanel = new JPanel();
+            dataPanel.setBackground(Color.BLACK);
+            dataPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            dataPanel.add(dataField);
+            dataPanel.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(dataPanel, BorderLayout.NORTH);
 
             JPanel buttons = new JPanel();
             buttons.setBackground(Color.BLACK);
-            buttons.setLayout(new GridLayout(2, 3, 10, 200));
+            buttons.setLayout(new GridLayout(2, 2, 20, 50));
             buttons.add(saveButton);
             buttons.add(readButton);
             buttons.add(disconnectButton);
             buttons.add(logoutButton);
-            this.add(buttons);
-            this.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(buttons, BorderLayout.CENTER);
+
+            this.add(Box.createRigidArea(new Dimension(0, 300)), BorderLayout.SOUTH);
+            this.add(Box.createRigidArea(new Dimension(300, 0)), BorderLayout.WEST);
+            this.add(Box.createRigidArea(new Dimension(300, 0)), BorderLayout.EAST);
         }
 
         private void prepareComponents() {
@@ -299,10 +347,10 @@ public class ClientGUI extends JFrame{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    stopHeartbeat();
+                    heartbeat.stopHeartbeat();
                     swapToPage("CONNECT");
                 }
-                
+
             });
 
             logoutButton = new JButton("Logout");
@@ -313,7 +361,7 @@ public class ClientGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     swapToPage("LOGIN");
                 }
-                
+
             });
 
             saveButton = new JButton("Save");
@@ -322,9 +370,9 @@ public class ClientGUI extends JFrame{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO: save 
+                    // TODO: save
                 }
-                
+
             });
 
             readButton = new JButton("Read");
@@ -335,12 +383,12 @@ public class ClientGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     // TODO: read
                 }
-                
+
             });
         }
 
         @Override
-        public Dimension getPreferredSize(){
+        public Dimension getPreferredSize() {
             return new Dimension(WIDTH, HEIGHT);
         }
     }
@@ -360,21 +408,42 @@ public class ClientGUI extends JFrame{
             super();
 
             this.setBackground(Color.BLACK);
-            
+
             prepareComponents();
 
-            
-            this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
-            
-            this.add(createLabel);
-            this.add(emailLabel);
-            this.add(emailField);
-            this.add(userLabel);
-            this.add(userField);
-            this.add(passLabel);
-            this.add(passField);
-            this.add(disconnectButton);
-            this.add(createButton);
+            this.setLayout(new BorderLayout());
+
+            JPanel mainLabelPanel = new JPanel();
+            mainLabelPanel.setBackground(Color.BLACK);
+            mainLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            mainLabelPanel.add(createLabel);
+            mainLabelPanel.add(Box.createRigidArea(new Dimension(0, 300)));
+            this.add(mainLabelPanel, BorderLayout.NORTH);
+
+            JPanel contentPanel = new JPanel();
+            contentPanel.setBackground(Color.BLACK);
+            contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            contentPanel.add(emailLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(152, 0)));
+            contentPanel.add(emailField);
+            contentPanel.add(userLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(58, 0)));
+            contentPanel.add(userField);
+            contentPanel.add(passLabel);
+            contentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+            contentPanel.add(passField);
+            this.add(contentPanel, BorderLayout.CENTER);
+
+            JPanel buttons = new JPanel();
+            buttons.setBackground(Color.BLACK);
+            buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+            buttons.add(disconnectButton);
+            buttons.add(createButton);
+            buttons.add(Box.createRigidArea(new Dimension(0, 200)));
+            this.add(buttons, BorderLayout.SOUTH);
+
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.WEST);
+            this.add(Box.createRigidArea(new Dimension(150, 0)), BorderLayout.EAST);
         }
 
         private void prepareComponents() {
@@ -391,7 +460,7 @@ public class ClientGUI extends JFrame{
             emailField.setHorizontalAlignment(JTextField.CENTER);
             emailField.setBackground(Color.GRAY);
             emailField.setForeground(Color.RED);
-            
+
             userLabel = new JLabel("USERNAME");
             userLabel.setFont(new Font("Arial", Font.PLAIN, 35));
             userLabel.setForeground(Color.WHITE);
@@ -418,10 +487,10 @@ public class ClientGUI extends JFrame{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    stopHeartbeat();
+                    heartbeat.stopHeartbeat();
                     swapToPage("CONNECT");
                 }
-                
+
             });
 
             createButton = new JButton("Create Account");
@@ -433,17 +502,44 @@ public class ClientGUI extends JFrame{
                     // TODO: create acct
                     swapToPage("LOGIN");
                 }
-                
+
             });
         }
 
         @Override
-        public Dimension getPreferredSize(){
+        public Dimension getPreferredSize() {
             return new Dimension(WIDTH, HEIGHT);
         }
     }
 
     public static void main(String[] args) {
         new ClientGUI();
+
+        /*
+         * REGEX CHECK BELOW
+         * if requirements change, uncomment code below. and combine first two lines.
+         */
+
+        // ClientGUI gui =
+
+        // Scanner kb = new Scanner(System.in);
+        // String search = "";
+        // do {
+        // System.out.print("Enter your email: ");
+        // search = kb.next();
+
+        // System.out.println((!gui.checkEmailForm(search) ? "Not a" : "A") + " valid
+        // email address");
+        // } while (!gui.checkEmailForm(search));
+
+        // do {
+        // System.out.println("Enter a password:" );
+        // search = kb.next();
+        // System.out.println((!gui.checkPasswordForm(search) ? "Not a" : "A") + " valid
+        // password");
+        // } while (!gui.checkPasswordForm(search));
+
+        // kb.close();
     }
+
 }

@@ -1,12 +1,20 @@
 package Admin;
 
+import java.net.Socket;
+
 public class ClientThread extends Thread{
     private int sessionID;
     private boolean connected;
     private long lastHeartbeat;
+    private Socket socket;
 
-    public ClientThread(int id){
+    public ClientThread(int id, Socket iSocket){
+        sessionID = id;
+        socket = iSocket;
+    }
 
+    public Socket getSocket(){
+        return socket;
     }
 
     public void stopClient(){
