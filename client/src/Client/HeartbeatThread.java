@@ -1,11 +1,14 @@
 package Client;
 
-public class HeartbeatThread extends Thread{
-    private String serverIP;
-    private boolean active;
-    
-    public HeartbeatThread(String s){
+import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+public class HeartbeatThread extends Thread{
+    private AtomicBoolean active = new AtomicBoolean(false);
+    private Socket socket;
+    
+    public HeartbeatThread(Socket iSocket){
+        this.socket = iSocket;
     }
 
     @Override
@@ -14,6 +17,10 @@ public class HeartbeatThread extends Thread{
     }
 
     public void stopHeartbeat(){
-
+        try {
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
