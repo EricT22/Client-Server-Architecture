@@ -20,7 +20,7 @@ public class APIRequest {
         serverIP = ip;
     }
 
-    public static void setSessionID(int i){
+    public static void setSessionID(int i) {
         sessionID = i;
     }
 
@@ -38,7 +38,8 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create("http://" + serverIP + "/api/login"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
+                        .header("Authorization",
+                                "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
@@ -53,7 +54,8 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/read"))
                         .method("GET", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
+                        .header("Authorization",
+                                "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
@@ -61,7 +63,8 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/write"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
+                        .header("Authorization",
+                                "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
@@ -69,12 +72,15 @@ public class APIRequest {
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create(serverIP + "/api/logout"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
-                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
+                        .header("Authorization",
+                                "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
             case REGISTER:
-
+                apiReq.request = HttpRequest.newBuilder().uri(URI.create(serverIP + "/api/register"))
+                        .method("POST", HttpRequest.BodyPublishers.ofString(apiReq.getPayload()))
+                        .header("Session", Integer.toString(sessionID)).build();
                 break;
             default:
                 break;
