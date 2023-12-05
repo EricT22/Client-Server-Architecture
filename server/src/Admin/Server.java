@@ -191,12 +191,12 @@ public class Server extends Thread {
         System.out.println("Session Registry Initialized");
     }
 
-    public void shutdownServer() throws IOException {
+    public void shutdownServer() throws Exception {
         System.out.println("Attempting to stop server.");
         socket.close();
         clientMap.forEach((key, value) -> {
             try {
-                value.getSocket().close();
+                value.stopClient();
             } catch (IOException e) {
                 e.printStackTrace();
             }
