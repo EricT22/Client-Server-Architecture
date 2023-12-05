@@ -21,12 +21,7 @@ public class SystemDatabase extends AbstractSQLConnector {
 
         return this.getResultSet();
     }
-
-    //updateDatabase required by AbstractSQLConnector
-    @Override
-    public void updateDatabase() { //DOES NOT DO ANYTHING
         
-    }
 
     public void updateDisplayData(String username, String displayData) { //INSERTS DISPLAYDATA AT USERNAME
 
@@ -81,10 +76,10 @@ public class SystemDatabase extends AbstractSQLConnector {
             }
         }
         catch (SQLException ex) {
-        // handle any errors
-        returnString +=("SQLException: " + ex.getMessage());
-        returnString +=("SQLState: " + ex.getSQLState());
-        returnString +=("VendorError: " + ex.getErrorCode());
+            // handle any errors
+            returnString +=("SQLException: " + ex.getMessage());
+            returnString +=("SQLState: " + ex.getSQLState());
+            returnString +=("VendorError: " + ex.getErrorCode());
         }
         return returnString;
     }

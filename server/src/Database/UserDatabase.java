@@ -9,11 +9,6 @@ public class UserDatabase extends AbstractSQLConnector{
         super(username, pass);
     }
 
-    @Override
-    public void updateDatabase() {
-
-    }
-
     public void updatePassword(String username, String password) { //INSERTS DISPLAYDATA AT USERNAME
 
         try {
@@ -76,10 +71,10 @@ public class UserDatabase extends AbstractSQLConnector{
             }
         }
         catch (SQLException ex) {
-        // handle any errors
-        returnString +=("SQLException: " + ex.getMessage());
-        returnString +=("SQLState: " + ex.getSQLState());
-        returnString +=("VendorError: " + ex.getErrorCode());
+            // handle any errors
+            returnString +=("SQLException: " + ex.getMessage());
+            returnString +=("SQLState: " + ex.getSQLState());
+            returnString +=("VendorError: " + ex.getErrorCode());
         }
         return returnString;
     }

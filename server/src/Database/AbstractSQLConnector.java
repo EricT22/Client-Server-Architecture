@@ -19,17 +19,19 @@ public abstract class AbstractSQLConnector implements DatabaseInterface {
 
             statement = connection.createStatement();
 
-            resultSet = statement.executeQuery("SELECT VERSION()");
-            if (resultSet.next()) {
+    resultSet = statement.executeQuery("SELECT VERSION()");
+    if (resultSet.next()){
 
-                System.out.println("MySQL version: " + resultSet.getString(1) + "\n=====================\n");
-            }
+        System.out.println("MySQL version: " + resultSet.getString(1) + "\n=====================\n");
+    }
 
-        } catch (SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-        }
+
+    }
+    catch(SQLException ex) {
+    System.out.println("SQLException: " + ex.getMessage());
+    System.out.println("SQLState: " + ex.getSQLState());
+    System.out.println("VendorError: " + ex.getErrorCode());
+    }
 
     }
 
