@@ -14,9 +14,14 @@ public class APIRequest {
     private String payload;
     private CompletableFuture<HttpResponse<String>> response = null;
     private HttpRequest request = null;
+    private static int sessionID = -1;
 
     public static void setIP(String ip) {
         serverIP = ip;
+    }
+
+    public static void setSessionID(int i){
+        sessionID = i;
     }
 
     public APIRequest(RequestScheme iScheme, String data) {
