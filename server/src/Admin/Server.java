@@ -195,11 +195,7 @@ public class Server extends Thread {
         System.out.println("Attempting to stop server.");
         socket.close();
         clientMap.forEach((key, value) -> {
-            try {
-                value.stopClient();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            value.stopClient();
         });
         active.set(false);
         APIServer.stop(0);
