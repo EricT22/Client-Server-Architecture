@@ -81,10 +81,10 @@ public class SystemDatabase extends AbstractSQLConnector {
             }
         }
         catch (SQLException ex) {
-        // handle any errors
-        returnString +=("SQLException: " + ex.getMessage());
-        returnString +=("SQLState: " + ex.getSQLState());
-        returnString +=("VendorError: " + ex.getErrorCode());
+            // handle any errors
+            returnString +=("SQLException: " + ex.getMessage());
+            returnString +=("SQLState: " + ex.getSQLState());
+            returnString +=("VendorError: " + ex.getErrorCode());
         }
         return returnString;
     }
