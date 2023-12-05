@@ -79,7 +79,7 @@ public class ClientGUI extends JFrame {
     }
 
     private boolean connectToServer(String ip) {
-        if(ip.trim().equals("")){
+        if (ip.trim().equals("")) {
             return false;
         }
         APIRequest.setIP(ip + ":" + Integer.toString(API_PORT));
@@ -144,7 +144,6 @@ public class ClientGUI extends JFrame {
             connectButton = new JButton("CONNECT");
             connectButton.setFont(new Font("Arial", Font.PLAIN, 50));
             connectButton.addActionListener(new ActionListener() {
-                // TODO connect to server socket here
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!connectToServer(ipField.getText())) {
@@ -242,7 +241,6 @@ public class ClientGUI extends JFrame {
             disconnectButton = new JButton("Disconnect");
             disconnectButton.setFont(new Font("Arial", Font.PLAIN, 25));
             disconnectButton.addActionListener(new ActionListener() {
-                // TODO End Socket Connetion here. Stop heartbeat.
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     heartbeat.stopHeartbeat();
@@ -257,8 +255,6 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO Eventually pass the session id that we receive when socket established
-                    // in data
                     APIRequest loginRequest = APIRequest.makeRequest(RequestScheme.LOGIN,
                             userField.getText() + ":" + passField.getText());
                     boolean valid = false;
@@ -267,13 +263,12 @@ public class ClientGUI extends JFrame {
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
-                    if (/* TODO:user and password combo correct */ valid)
+                    if (valid) {
                         swapToPage("MAIN");
-                    // else if (loginCounter == 3){
-                    // acct recov pop up
-                    // } else {
-                    // loginCounter++;
-                    // }
+                    } else {
+                        //TODO Increment failure count pop up acct recovery
+                    }
+
                 }
 
             });
