@@ -24,6 +24,10 @@ public class ClientThread extends Thread {
         socket = iSocket;
     }
 
+    public boolean isActive(){
+        return active.get();
+    }
+
     public void stopClient() {
         System.out.println("Attempting to stop Client Thread on Session ID" + sessionID);
         active.set(false);
