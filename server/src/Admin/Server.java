@@ -64,6 +64,7 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
+                    System.out.println("Session " + sessionID + " Logged In");
                 }
             }
             exchange.close();
@@ -84,6 +85,7 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
+                    System.out.println("Session " + sessionID + " Requested Acct Recovery");
                 }
             }
             exchange.close();
@@ -97,6 +99,7 @@ public class Server extends Thread {
                 if (sessionRegistry.get(sessionID)) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
+                    System.out.println("Session " + sessionID + " Registered New Account");
                 }
             }
         }));
@@ -115,6 +118,7 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
+                    System.out.println("Session " + sessionID + " Wrote to Database");
                 }
             }
             exchange.close();
@@ -134,6 +138,7 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
+                    System.out.println("Session " + sessionID + " Read From Database");
                 }
             }
             exchange.close();
@@ -153,6 +158,7 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
+                    System.out.println("Session " + sessionID + " Logged Out");
                 }
             }
             exchange.close();
