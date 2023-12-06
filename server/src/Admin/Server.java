@@ -37,8 +37,6 @@ public class Server extends Thread {
 
     private final AtomicBoolean active = new AtomicBoolean(true);
 
-    private EmailDispatcher emailDispatch;
-
     public Server() throws IOException {
         userDB = new UserDatabase("root", "password");
         systemDB = new SystemDatabase("root", "password");
@@ -60,8 +58,8 @@ public class Server extends Thread {
         while (options.size() != 0) {
             String selected = options.get((int) Math.floor(Math.random() * options.size()));
             options.remove(selected);
-            if(selected.indexOf("ANY") != -1){
-                selected = new String[]{"NUM","UP","LOW","SPECIAL"}[(int)Math.floor(Math.random()*4)];
+            if (selected.indexOf("ANY") != -1) {
+                selected = new String[] { "NUM", "UP", "LOW", "SPECIAL" }[(int) Math.floor(Math.random() * 4)];
             }
             switch (selected) {
                 case "NUM":
@@ -133,7 +131,15 @@ public class Server extends Thread {
                     clientMap.get(sessionID).lock(user);
                     String email = userDB.getEmail(user);
                     if (email.length() != 0) {
-                        // TODO Use email dispatcher to send generated email
+                        String newpass = genPassword();
+                        userDB.updatePassword(user, newpass);
+                        System.out.println("New password: " + newpass);
+                        (new Thread() {
+                            @Override
+                            public void run() {
+                                EmailDispatcher.sendEmail(email, "Your new password is: " + newpass);
+                            }
+                        }).start();
                     }
                 }
             }

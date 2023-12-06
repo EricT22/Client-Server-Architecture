@@ -39,7 +39,7 @@ public class ClientGUI extends JFrame {
 
     private final int WIDTH = 1000;
     private final int HEIGHT = 800;
-    // TODO Have reinhart explain regex
+    // TODO Implement regex checking before attempting to register
     private final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
     private Pattern passPattern = Pattern.compile(PASSWORD_REGEX);
 
