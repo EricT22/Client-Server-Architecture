@@ -13,7 +13,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
-import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -25,7 +24,6 @@ import javax.swing.JTextField;
 
 import java.util.regex.Pattern;
 
-import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 public class ClientGUI extends JFrame {
@@ -313,7 +311,6 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO Register account request
                     swapToPage("CR ACCT");
                 }
 
@@ -388,7 +385,6 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO Implement logout request
                     try {
                         APIRequest.makeRequest(RequestScheme.LOGOUT, username + ":" + password).execute();
                     } catch (InterruptedException | ExecutionException e1) {
@@ -404,7 +400,11 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO: save
+                    try {
+                        APIRequest.makeRequest(RequestScheme.WRITE_DATA, dataField.getText() + "||" + username + ":" + password).execute();
+                    } catch (InterruptedException | ExecutionException e1) {
+                        e1.printStackTrace();
+                    }
                 }
 
             });

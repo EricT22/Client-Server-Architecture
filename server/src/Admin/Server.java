@@ -105,7 +105,7 @@ public class Server extends Thread {
                     String raw = new String(exchange.getRequestBody().readAllBytes());
                     System.out.println("Session " + sessionID + " Registered New Account" + raw);
                     String responseText = "Account Created Successfully";
-                    exchange.sendResponseHeaders(200,responseText.getBytes().length);
+                    exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
@@ -122,13 +122,13 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    // TODO Finish the BasicAuthenticator
+                    System.out.println("Session " + sessionID + " Wrote to Database: "
+                            + new String(exchange.getRequestBody().readAllBytes()));
                     String responseText = "Data written to database";
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
-                    System.out.println("Session " + sessionID + " Wrote to Database");
                 }
             }
             exchange.close();
@@ -162,7 +162,6 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    // TODO Finish the BasicAuthenticator, update corresponding client thread
                     String responseText = "Succesfully logged out.";
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();

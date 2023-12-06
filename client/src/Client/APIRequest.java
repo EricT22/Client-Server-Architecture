@@ -59,13 +59,21 @@ public class APIRequest {
                         .build();
                 break;
             case WRITE_DATA:
+                System.out.println(apiReq.getPayload());
+                System.out.println(apiReq.getPayload().substring(apiReq.getPayload().indexOf("||")+2));
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create("http://" + serverIP + "/api/write"))
-                        .method("POST", HttpRequest.BodyPublishers.noBody())
+                        .method("POST",
+                                HttpRequest.BodyPublishers
+                                        .ofString(apiReq.getPayload().substring(0, apiReq.getPayload().indexOf("||"))))
                         .header("Authorization",
-                                "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
+                                "Basic " + Base64.getEncoder()
+                                        .encodeToString(apiReq.getPayload().substring(apiReq.getPayload().indexOf("||")+2).getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
+
+                System.out.println("Body will be " + apiReq.getPayload().split("||")[0]);
+                System.out.println("Auth will be " + apiReq.getPayload().split("||")[1]);
                 break;
             case LOGOUT:
                 apiReq.request = HttpRequest.newBuilder()
@@ -98,13 +106,13 @@ public class APIRequest {
     }
 
     public boolean execute() throws InterruptedException, ExecutionException {
-        System.out.println(request.toString());
+        // System.out.println(request.toString());
         if (request == null) {
             return false;
         }
         response = HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
         if (response.get().statusCode() != 200) {
-            System.out.println("Error");
+            System.out.println("Error: " + response.get().statusCode());
             System.out.println(response.get().body());
             System.out.println(response.get().toString());
             return false;
@@ -113,6 +121,9 @@ public class APIRequest {
             case LOGIN:
                 System.out.println("Sucessfully logged in with credentials: " + new String(Base64.getDecoder()
                         .decode(response.get().body().substring(response.get().body().indexOf(": ") + 2))));
+                break;
+            case WRITE_DATA:
+                System.out.println("Sucessfully wrote data: " + response.get().body());
                 break;
             default:
                 System.out.println(response.get().body());
