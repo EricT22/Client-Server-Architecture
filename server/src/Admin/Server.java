@@ -102,9 +102,16 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    System.out.println("Session " + sessionID + " Registered New Account");
+                    String raw = new String(exchange.getRequestBody().readAllBytes());
+                    System.out.println("Session " + sessionID + " Registered New Account" + raw);
+                    String responseText = "Account Created Successfully";
+                    exchange.sendResponseHeaders(200,responseText.getBytes().length);
+                    OutputStream output = exchange.getResponseBody();
+                    output.write(responseText.getBytes());
+                    output.flush();
                 }
             }
+            exchange.close();
         }));
 
         secureContexts.add(APIServer.createContext("/api/write", (exchange -> {

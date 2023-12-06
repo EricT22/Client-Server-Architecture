@@ -533,7 +533,10 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO: create acct
+                    try {
+                        APIRequest.makeRequest(RequestScheme.REGISTER, emailField.getText() + "||" + userField.getText() + ":" + passField.getText()).execute();
+                    } catch (InterruptedException | ExecutionException e1) {
+                    }
                     swapToPage("LOGIN");
                 }
 
