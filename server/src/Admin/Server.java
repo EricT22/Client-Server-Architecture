@@ -93,8 +93,7 @@ public class Server extends Thread {
                     clientMap.get(sessionID).lock(user);
                     String email = userDB.getEmail(user);
                     if(email.length() != 0){
-                        //TODO Use email dispatcher
-                        System.out.println("Emailing " + email);
+                        //TODO Use email dispatcher to send generated email
                     }
                 }
             }
@@ -109,7 +108,6 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    //TODO Register new acct
                     String raw = new String(exchange.getRequestBody().readAllBytes());
                     String email = raw.substring(0,raw.indexOf("||"));
                     String user = raw.substring(raw.indexOf("||") + 2,raw.indexOf(":"));
