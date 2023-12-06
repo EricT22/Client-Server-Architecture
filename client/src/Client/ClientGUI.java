@@ -415,7 +415,14 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO: read
+                    APIRequest readReq = APIRequest.makeRequest(RequestScheme.READ_DATA, username + ":" + password);
+                    try {
+                        readReq.execute();
+                        String response = readReq.getResponse();
+                        dataField.setText(response);
+                    } catch (InterruptedException | ExecutionException e1) {
+                        e1.printStackTrace();
+                    }
                 }
 
             });
