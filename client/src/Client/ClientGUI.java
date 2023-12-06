@@ -78,7 +78,7 @@ public class ClientGUI extends JFrame {
         // TODO: implement
     }
 
-    private boolean connectToServer(String ip) {
+    private boolean connectToServer(String ip) throws Exception {
         if (ip.trim().equals("")) {
             return false;
         }
@@ -94,7 +94,7 @@ public class ClientGUI extends JFrame {
         } catch (Exception e) {
             return false;
         }
-        heartbeat = new HeartbeatThread(server);
+        heartbeat = new HeartbeatThread(server,this);
         heartbeat.start();
         System.out.println("Connected to Server w/ Session ID" + sessionID);
         return true;
@@ -108,7 +108,7 @@ public class ClientGUI extends JFrame {
         return emailPattern.matcher(email).matches();
     }
 
-    private void swapToPage(String pagename) {
+    public void swapToPage(String pagename) {
         CardLayout cl = (CardLayout) container.getLayout();
         cl.show(container, pagename);
     }
@@ -148,10 +148,13 @@ public class ClientGUI extends JFrame {
             connectButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (!connectToServer(ipField.getText())) {
-                        ipField.setText("404: Server not Found");
-                    } else {
-                        swapToPage("LOGIN");
+                    try {
+                        if (!connectToServer(ipField.getText())) {
+                            ipField.setText("404: Server not Found");
+                        } else {
+                            swapToPage("LOGIN");
+                        }
+                    } catch (Exception e1) {
                     }
                 }
 
