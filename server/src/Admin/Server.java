@@ -76,7 +76,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (clientMap.get(sessionID) != null) {
+                if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Lookup user email with parsed username from request, utilize email
@@ -98,7 +98,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (clientMap.get(sessionID) != null) {
+                if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     System.out.println("Session " + sessionID + " Registered New Account");
@@ -111,7 +111,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (clientMap.get(sessionID) != null) {
+                if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Finish the BasicAuthenticator
@@ -131,7 +131,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (clientMap.get(sessionID) != null) {
+                if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Finish the BasicAuthenticator, return data to user
@@ -151,7 +151,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (clientMap.get(sessionID) != null) {
+                if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Finish the BasicAuthenticator, update corresponding client thread
