@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Base64;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientThread extends Thread {
@@ -13,11 +15,35 @@ public class ClientThread extends Thread {
     private Socket socket;
     private int sessionTimeout = 60000;
     private static int connectedCount = 0;
+    private static int loggedCount = 0;
+    private boolean loggedIn = false;
+
+    private static Vector<String> usernames = new Vector<>();
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
     public synchronized static int getConnectionCount() {
         return connectedCount;
+    }
+
+    public static String getLoggedNames() {
+        if(usernames.size() == 0){
+            return "";
+        }
+        String out = "";
+        for(int i = 0; i < usernames.size() - 1; i++){
+            out = out + usernames.get(i) + ", ";
+        }
+        out = out + usernames.get(usernames.size()-1);
+        return out;
+    }
+
+    public synchronized static int getLoggedCount() {
+        return loggedCount;
+    }
+
+    public static void clearLoggedList(){
+        usernames = new Vector<>();
     }
 
     public ClientThread(int id, Socket iSocket) throws SocketException {
@@ -29,16 +55,34 @@ public class ClientThread extends Thread {
         return active.get();
     }
 
+    public synchronized void login(String s) {
+        String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
+        usernames.add(creds.substring(0,creds.indexOf(":")));
+        loggedIn = true;
+        loggedCount++;
+    }
+
+    public synchronized void logout(String s) {
+        String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
+        usernames.remove(creds.substring(0,creds.indexOf(":")));
+        loggedIn = false;
+        loggedCount--;
+    }
+
     public void stopClient() {
         System.out.println("Attempting to stop Client Thread on Session ID" + sessionID);
         active.set(false);
-        Server.sessionRegistry.put(sessionID,false);
+        Server.sessionRegistry.put(sessionID, false);
         try {
             socket.close();
         } catch (IOException e) {
             // e.printStackTrace();
         }
         connectedCount--;
+        if (loggedIn) {
+            loggedIn = false;
+            loggedCount--;
+        }
         if (connectedCount < 0) {
             connectedCount = 0;
         }

@@ -2,6 +2,7 @@ package Admin;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,6 +33,7 @@ public class Server extends Thread {
     private static ConcurrentMap<Integer, ClientThread> clientMap;
     public static ConcurrentMap<Integer, Boolean> sessionRegistry;
     private ServerSocket socket;
+    private Vector<String> loggedInUsers;
 
     private final AtomicBoolean active = new AtomicBoolean(true);
 
@@ -66,6 +68,8 @@ public class Server extends Thread {
                     output.write(responseText.getBytes());
                     output.flush();
                     System.out.println("Session " + sessionID + " Logged In");
+                    clientMap.get(sessionID).login(exchange.getRequestHeaders().getFirst("Authorization"));
+
                 }
             }
             exchange.close();
@@ -168,6 +172,7 @@ public class Server extends Thread {
                     output.write(responseText.getBytes());
                     output.flush();
                     System.out.println("Session " + sessionID + " Logged Out");
+                    clientMap.get(sessionID).logout(exchange.getRequestHeaders().getFirst("Authorization"));
                 }
             }
             exchange.close();
@@ -191,6 +196,7 @@ public class Server extends Thread {
 
         clientMap = new ConcurrentHashMap<Integer, ClientThread>();
         sessionRegistry = new ConcurrentHashMap<Integer, Boolean>();
+        loggedInUsers = new Vector<>();
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
             sessionRegistry.put(i, false);
@@ -248,12 +254,21 @@ public class Server extends Thread {
         return ClientThread.getConnectionCount();
     }
 
+    public int getLoggedUsers(){
+        return ClientThread.getLoggedCount();
+    }
+
+    public String getLoggedNames(){
+        return ClientThread.getLoggedNames();
+    }
+
     public void shutdownServer() throws Exception {
         System.out.println("Attempting to stop server.");
         socket.close();
         clientMap.forEach((key, value) -> {
             value.stopClient();
         });
+        ClientThread.clearLoggedList();
         active.set(false);
         APIServer.stop(0);
         System.out.println("Server stopped.");

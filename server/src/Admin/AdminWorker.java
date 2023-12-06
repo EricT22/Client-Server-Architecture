@@ -29,10 +29,10 @@ public class AdminWorker implements Runnable{
         queries += "Active Users: " + aFrame.server.getActiveUsers() + '\n';
         
         // num logged in users
-        queries += "";
+        queries += "Logged in Users: " + aFrame.server.getLoggedUsers() + '\n';
 
         // which users are logged in (names)
-        queries += "";
+        queries += aFrame.server.getLoggedNames() + '\n';
 
         // which users are locked out (names)
         queries += "";
@@ -45,5 +45,20 @@ public class AdminWorker implements Runnable{
 
     public void stop() {
         stopped = true;
+        String queries = "";
+
+        // num connected users
+        queries += "Active Users: 0" + '\n';
+        
+        // num logged in users
+        queries += "Logged in Users: 0" +  '\n';
+
+        // which users are locked out (names)
+        queries += "";
+
+        // num registered users
+        queries += "";
+
+        aFrame.queries.setText(queries);
     }
 }
