@@ -142,7 +142,7 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    // TODO Finish the BasicAuthenticator, return data to user
+                    // TODO return data to user
                     String responseText = "Data read from database";
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
