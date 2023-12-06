@@ -35,7 +35,7 @@ public class AdminWorker implements Runnable{
         queries += aFrame.server.getLoggedNames() + '\n';
 
         // which users are locked out (names)
-        queries += "";
+        queries += "Locked\n" + aFrame.server.getLockedNames() + '\n';
 
         // num registered users
         queries += "";
@@ -54,7 +54,7 @@ public class AdminWorker implements Runnable{
         queries += "Logged in Users: 0" +  '\n';
 
         // which users are locked out (names)
-        queries += "";
+        queries += "Locked\n";
 
         // num registered users
         queries += "";

@@ -69,7 +69,7 @@ public class Server extends Thread {
                     output.flush();
                     System.out.println("Session " + sessionID + " Logged In");
                     clientMap.get(sessionID).login(exchange.getRequestHeaders().getFirst("Authorization"));
-
+                    clientMap.get(sessionID).unlock((exchange.getRequestHeaders().getFirst("Authorization")));
                 }
             }
             exchange.close();
@@ -90,9 +90,11 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
+                    String user = new String(exchange.getRequestBody().readAllBytes());
                     System.out
                             .println("Session " + sessionID + " Requested Acct Recovery "
-                                    + new String(exchange.getRequestBody().readAllBytes()));
+                                    + user);
+                    clientMap.get(sessionID).lock(user);
                 }
             }
             exchange.close();
@@ -254,12 +256,16 @@ public class Server extends Thread {
         return ClientThread.getConnectionCount();
     }
 
-    public int getLoggedUsers(){
+    public int getLoggedUsers() {
         return ClientThread.getLoggedCount();
     }
 
-    public String getLoggedNames(){
+    public String getLoggedNames() {
         return ClientThread.getLoggedNames();
+    }
+
+    public String getLockedNames() {
+        return ClientThread.getLockedNames();
     }
 
     public void shutdownServer() throws Exception {

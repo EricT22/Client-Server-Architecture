@@ -17,8 +17,11 @@ public class ClientThread extends Thread {
     private static int connectedCount = 0;
     private static int loggedCount = 0;
     private boolean loggedIn = false;
+    private boolean locked = false;
+    private static int lockedCount = 0;
 
     private static Vector<String> usernames = new Vector<>();
+    private static Vector<String> lockednames = new Vector<>();
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
@@ -27,14 +30,26 @@ public class ClientThread extends Thread {
     }
 
     public static String getLoggedNames() {
-        if(usernames.size() == 0){
+        if (usernames.size() == 0) {
             return "";
         }
         String out = "";
-        for(int i = 0; i < usernames.size() - 1; i++){
+        for (int i = 0; i < usernames.size() - 1; i++) {
             out = out + usernames.get(i) + ", ";
         }
-        out = out + usernames.get(usernames.size()-1);
+        out = out + usernames.get(usernames.size() - 1);
+        return out;
+    }
+
+    public static String getLockedNames() {
+        if (lockednames.size() == 0) {
+            return "";
+        }
+        String out = "";
+        for (int i = 0; i < lockednames.size() - 1; i++) {
+            out = out + lockednames.get(i) + ", ";
+        }
+        out = out + lockednames.get(lockednames.size() - 1);
         return out;
     }
 
@@ -42,8 +57,12 @@ public class ClientThread extends Thread {
         return loggedCount;
     }
 
-    public static void clearLoggedList(){
+    public static void clearLoggedList() {
         usernames = new Vector<>();
+    }
+
+    public static void clearLockedList() {
+        lockednames = new Vector<>();
     }
 
     public ClientThread(int id, Socket iSocket) throws SocketException {
@@ -57,16 +76,36 @@ public class ClientThread extends Thread {
 
     public synchronized void login(String s) {
         String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
-        usernames.add(creds.substring(0,creds.indexOf(":")));
+        usernames.add(creds.substring(0, creds.indexOf(":")));
         loggedIn = true;
         loggedCount++;
+        if (locked) {
+            unlock(s);
+        }
+    }
+
+    public synchronized void lock(String s) {
+        System.out.println("Locking " + s);
+        lockednames.add(s);
+        locked = true;
+        lockedCount++;
     }
 
     public synchronized void logout(String s) {
         String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
-        usernames.remove(creds.substring(0,creds.indexOf(":")));
+        usernames.remove(creds.substring(0, creds.indexOf(":")));
         loggedIn = false;
         loggedCount--;
+    }
+
+    public synchronized void unlock(String s) {
+        if(!locked){
+            return;
+        }
+        String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
+        lockednames.remove(creds.substring(0, creds.indexOf(":")));
+        locked = false;
+        lockedCount--;
     }
 
     public void stopClient() {
