@@ -87,7 +87,8 @@ public class Server extends Thread {
                     output.write(responseText.getBytes());
                     output.flush();
                     System.out
-                            .println("Session " + sessionID + " Requested Acct Recovery " + exchange.getRequestBody());
+                            .println("Session " + sessionID + " Requested Acct Recovery "
+                                    + new String(exchange.getRequestBody().readAllBytes()));
                 }
             }
             exchange.close();
@@ -230,7 +231,7 @@ public class Server extends Thread {
             if (!sessionRegistry.get(i)) {
                 nextSession = i;
                 found = true;
-                sessionRegistry.put(i,true);
+                sessionRegistry.put(i, true);
             }
         }
         System.out.println(!found ? "Rejecting Connection" : "Allocating a new Session ID " + nextSession);
