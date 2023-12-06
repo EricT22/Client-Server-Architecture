@@ -1,6 +1,7 @@
 package Admin;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -15,7 +16,7 @@ public class ClientThread extends Thread {
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
-    public static int getConnectionCount(){
+    public synchronized static int getConnectionCount() {
         return connectedCount;
     }
 
@@ -24,7 +25,7 @@ public class ClientThread extends Thread {
         socket = iSocket;
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return active.get();
     }
 
@@ -37,6 +38,9 @@ public class ClientThread extends Thread {
             // e.printStackTrace();
         }
         connectedCount--;
+        if (connectedCount < 0) {
+            connectedCount = 0;
+        }
         System.out.println("Client Thread for Session ID " + sessionID + " ended");
     }
 
@@ -50,7 +54,8 @@ public class ClientThread extends Thread {
         connectedCount++;
         while (active.get()) {
             try {
-                int status = (new DataInputStream(socket.getInputStream())).read();
+                int hb = (new DataInputStream(socket.getInputStream())).read();
+                (new DataOutputStream(socket.getOutputStream())).write(200);
                 lastHeartbeat = System.currentTimeMillis();
             } catch (Exception e) {
                 active.set(false);
