@@ -20,7 +20,7 @@ public class ClientThread extends Thread {
     private boolean locked = false;
     private static int lockedCount = 0;
 
-    private static String uName = null;
+    private String uName = null;
 
     private static Vector<String> usernames = new Vector<>();
     private static Vector<String> lockednames = new Vector<>();
@@ -29,6 +29,10 @@ public class ClientThread extends Thread {
 
     public synchronized static int getConnectionCount() {
         return connectedCount;
+    }
+
+    public String getUName(){
+        return uName;
     }
 
     public static String getLoggedNames() {

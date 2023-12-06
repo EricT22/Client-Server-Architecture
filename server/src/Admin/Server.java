@@ -126,8 +126,13 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    System.out.println("Session " + sessionID + " Wrote to Database: "
-                            + new String(exchange.getRequestBody().readAllBytes()));
+                    if (systemDB.getDisplayData(clientMap.get(sessionID).getUName()).length() == 0) {
+                        systemDB.addNewData(clientMap.get(sessionID).getUName(),
+                                new String(exchange.getRequestBody().readAllBytes()));
+                    } else {
+                        systemDB.updateDisplayData(clientMap.get(sessionID).getUName(),
+                                new String(exchange.getRequestBody().readAllBytes()));
+                    }
                     String responseText = "Data written to database";
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
@@ -147,7 +152,7 @@ public class Server extends Thread {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO return data to user
-                    String responseText = "Data read from database";
+                    String responseText = systemDB.getDisplayData(clientMap.get(sessionID).getUName());
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
@@ -184,7 +189,7 @@ public class Server extends Thread {
                 if (username.trim().equals("")) {
                     return false;
                 }
-                return(password.trim().equals(userDB.getPassword(username).trim()));
+                return (password.trim().equals(userDB.getPassword(username).trim()));
             };
         }));
         APIServer.setExecutor(null);
