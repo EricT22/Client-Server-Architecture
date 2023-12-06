@@ -1,7 +1,6 @@
 package Admin;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,7 +32,6 @@ public class Server extends Thread {
     private static ConcurrentMap<Integer, ClientThread> clientMap;
     public static ConcurrentMap<Integer, Boolean> sessionRegistry;
     private ServerSocket socket;
-    private Vector<String> loggedInUsers;
 
     private final AtomicBoolean active = new AtomicBoolean(true);
 
@@ -93,6 +91,11 @@ public class Server extends Thread {
                             .println("Session " + sessionID + " Requested Acct Recovery "
                                     + user);
                     clientMap.get(sessionID).lock(user);
+                    String email = userDB.getEmail(user);
+                    if(email.length() != 0){
+                        //TODO Use email dispatcher
+                        System.out.println("Emailing " + email);
+                    }
                 }
             }
             exchange.close();
@@ -106,8 +109,12 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
+                    //TODO Register new acct
                     String raw = new String(exchange.getRequestBody().readAllBytes());
-                    System.out.println("Session " + sessionID + " Registered New Account" + raw);
+                    String email = raw.substring(0,raw.indexOf("||"));
+                    String user = raw.substring(raw.indexOf("||") + 2,raw.indexOf(":"));
+                    String pass = raw.substring(raw.indexOf(":") + 1);
+                    userDB.addNewData(user, pass, email);
                     String responseText = "Account Created Successfully";
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
@@ -151,7 +158,6 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    // TODO return data to user
                     String responseText = systemDB.getDisplayData(clientMap.get(sessionID).getUName());
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
@@ -201,7 +207,6 @@ public class Server extends Thread {
 
         clientMap = new ConcurrentHashMap<Integer, ClientThread>();
         sessionRegistry = new ConcurrentHashMap<Integer, Boolean>();
-        loggedInUsers = new Vector<>();
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
             sessionRegistry.put(i, false);

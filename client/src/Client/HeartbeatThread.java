@@ -26,7 +26,7 @@ public class HeartbeatThread extends Thread {
             try {
                 (new DataOutputStream(socket.getOutputStream())).writeInt(200);
                 Thread.sleep(5000);
-                int status = (new DataInputStream(socket.getInputStream())).readInt();
+                (new DataInputStream(socket.getInputStream())).readInt();
             } catch (SocketTimeoutException | SocketException e1) {
                 stopHeartbeat();
             } catch (Exception e) {

@@ -18,7 +18,6 @@ public class ClientThread extends Thread {
     private static int loggedCount = 0;
     private boolean loggedIn = false;
     private boolean locked = false;
-    private static int lockedCount = 0;
 
     private String uName = null;
 
@@ -95,7 +94,6 @@ public class ClientThread extends Thread {
         System.out.println("Locking " + s);
         lockednames.add(s);
         locked = true;
-        lockedCount++;
     }
 
     public synchronized void logout(String s) {
@@ -112,7 +110,6 @@ public class ClientThread extends Thread {
         String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
         lockednames.remove(creds.substring(0, creds.indexOf(":")));
         locked = false;
-        lockedCount--;
     }
 
     public void stopClient() {
@@ -146,7 +143,7 @@ public class ClientThread extends Thread {
         connectedCount++;
         while (active.get()) {
             try {
-                int hb = (new DataInputStream(socket.getInputStream())).read();
+                (new DataInputStream(socket.getInputStream())).read();
                 (new DataOutputStream(socket.getOutputStream())).write(200);
                 lastHeartbeat = System.currentTimeMillis();
             } catch (Exception e) {

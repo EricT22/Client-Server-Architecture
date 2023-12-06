@@ -78,11 +78,6 @@ public class ClientGUI extends JFrame {
 
         this.setVisible(true);
     }
-
-    private void displayImage() {
-        // TODO: implement
-    }
-
     private boolean connectToServer(String ip) throws Exception {
         if (ip.trim().equals("")) {
             return false;
