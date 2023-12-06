@@ -5,6 +5,8 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import Database.SystemDatabase;
 import Database.UserDatabase;
@@ -40,6 +42,44 @@ public class Server extends Thread {
     public Server() throws IOException {
         userDB = new UserDatabase("root", "password");
         systemDB = new SystemDatabase("root", "password");
+    }
+
+    public static String genPassword() {
+        ArrayList<String> options = new ArrayList<>();
+        options.add("NUM");
+        options.add("UP");
+        options.add("LOW");
+        options.add("SPECIAL");
+        options.add("ANY1");
+        options.add("ANY2");
+        options.add("ANY3");
+        options.add("ANY4");
+
+        String out = "";
+
+        while (options.size() != 0) {
+            String selected = options.get((int) Math.floor(Math.random() * options.size()));
+            options.remove(selected);
+            if(selected.indexOf("ANY") != -1){
+                selected = new String[]{"NUM","UP","LOW","SPECIAL"}[(int)Math.floor(Math.random()*4)];
+            }
+            switch (selected) {
+                case "NUM":
+                    out += Character.toString((char) (48 + (int) Math.floor(Math.random() * 10)));
+                    break;
+                case "UP":
+                    out += Character.toString((char) (65 + (int) Math.floor(Math.random() * 26)));
+                    break;
+                case "LOW":
+                    out += Character.toString((char) (97 + (int) Math.floor(Math.random() * 26)));
+                    break;
+                case "SPECIAL":
+                    String chars = "@#$%^&+=";
+                    out += Character.toString(chars.charAt((int) Math.floor(Math.random() * chars.length())));
+                    break;
+            }
+        }
+        return out;
     }
 
     public void configureAPIServer() throws IOException {
@@ -92,8 +132,8 @@ public class Server extends Thread {
                                     + user);
                     clientMap.get(sessionID).lock(user);
                     String email = userDB.getEmail(user);
-                    if(email.length() != 0){
-                        //TODO Use email dispatcher to send generated email
+                    if (email.length() != 0) {
+                        // TODO Use email dispatcher to send generated email
                     }
                 }
             }
@@ -109,8 +149,8 @@ public class Server extends Thread {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     String raw = new String(exchange.getRequestBody().readAllBytes());
-                    String email = raw.substring(0,raw.indexOf("||"));
-                    String user = raw.substring(raw.indexOf("||") + 2,raw.indexOf(":"));
+                    String email = raw.substring(0, raw.indexOf("||"));
+                    String user = raw.substring(raw.indexOf("||") + 2, raw.indexOf(":"));
                     String pass = raw.substring(raw.indexOf(":") + 1);
                     userDB.addNewData(user, pass, email);
                     String responseText = "Account Created Successfully";
