@@ -44,14 +44,14 @@ public class APIRequest {
                 break;
             case ACCT_RECOVERY:
                 apiReq.request = HttpRequest.newBuilder()
-                        .uri(URI.create(serverIP + "/api/recovery"))
-                        .method("POST", HttpRequest.BodyPublishers.noBody())
+                        .uri(URI.create("http://" + serverIP + "/api/recovery"))
+                        .method("POST", HttpRequest.BodyPublishers.ofString(apiReq.payload))
                         .header("Session", Integer.toString(sessionID))
                         .build();
                 break;
             case READ_DATA:
                 apiReq.request = HttpRequest.newBuilder()
-                        .uri(URI.create(serverIP + "/api/read"))
+                        .uri(URI.create("http://" + serverIP + "/api/read"))
                         .method("GET", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization",
                                 "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
@@ -60,7 +60,7 @@ public class APIRequest {
                 break;
             case WRITE_DATA:
                 apiReq.request = HttpRequest.newBuilder()
-                        .uri(URI.create(serverIP + "/api/write"))
+                        .uri(URI.create("http://" + serverIP + "/api/write"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization",
                                 "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
@@ -69,7 +69,7 @@ public class APIRequest {
                 break;
             case LOGOUT:
                 apiReq.request = HttpRequest.newBuilder()
-                        .uri(URI.create(serverIP + "/api/logout"))
+                        .uri(URI.create("http://" + serverIP + "/api/logout"))
                         .method("POST", HttpRequest.BodyPublishers.noBody())
                         .header("Authorization",
                                 "Basic " + Base64.getEncoder().encodeToString(apiReq.getPayload().getBytes()))
@@ -77,7 +77,8 @@ public class APIRequest {
                         .build();
                 break;
             case REGISTER:
-                apiReq.request = HttpRequest.newBuilder().uri(URI.create(serverIP + "/api/register"))
+                apiReq.request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://" + serverIP + "/api/register"))
                         .method("POST", HttpRequest.BodyPublishers.ofString(apiReq.getPayload()))
                         .header("Session", Integer.toString(sessionID)).build();
                 break;
@@ -105,6 +106,7 @@ public class APIRequest {
         if (response.get().statusCode() != 200) {
             System.out.println("Error");
             System.out.println(response.get().body());
+            System.out.println(response.get().toString());
             return false;
         }
         switch (scheme) {
