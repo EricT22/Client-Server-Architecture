@@ -5,16 +5,6 @@ import java.sql.SQLException;
 
 public class UserDatabase extends AbstractSQLConnector {
 
-
-    public static void main(String[] args) {
-        UserDatabase userdb = new UserDatabase("root", "password");
-        System.out.println("Test Start");
-        // userdb.addNewData("admin", "admin", "scottwegley@gmail.com"); Add example.
-        String item = userdb.getPassword("temp");
-
-        System.out.print("Test End");
-    }
-
     public UserDatabase(String username, String pass) {
         super(username, pass);
     }
@@ -68,6 +58,16 @@ public class UserDatabase extends AbstractSQLConnector {
             e.printStackTrace();
         }
         System.out.println(getResultSet());
+    }
+
+    public int getNumOfRegisteredUsers() {
+        try {
+            resultSet = statement.executeQuery("SELECT * FROM usertable;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(resultSet);
+        return 0;
     }
 
     @Override
