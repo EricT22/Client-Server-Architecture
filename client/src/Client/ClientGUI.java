@@ -343,7 +343,7 @@ public class ClientGUI extends JFrame {
                             swapToPage("LOGIN");
                         }
                     } else {
-                        JOptionPane.showConfirmDialog(null, "Invalid Username Password Combination", "Error",
+                        JOptionPane.showConfirmDialog(null, "Login Rejected", "Error",
                                 JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
                     }
                 }
