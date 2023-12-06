@@ -5,7 +5,10 @@ import java.sql.SQLException;
 
 public class SystemDatabase extends AbstractSQLConnector {
     
-    
+    public static void main(String[] args) {
+        
+    }
+
     // Constructor
     public SystemDatabase(String username, String password) {
         super(username, password);
