@@ -20,6 +20,8 @@ public class ClientThread extends Thread {
     private boolean locked = false;
     private static int lockedCount = 0;
 
+    private static String uName = null;
+
     private static Vector<String> usernames = new Vector<>();
     private static Vector<String> lockednames = new Vector<>();
 
@@ -77,6 +79,7 @@ public class ClientThread extends Thread {
     public synchronized void login(String s) {
         String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
         usernames.add(creds.substring(0, creds.indexOf(":")));
+        uName = creds.substring(0, creds.indexOf(":"));
         loggedIn = true;
         loggedCount++;
         if (locked) {
@@ -121,6 +124,7 @@ public class ClientThread extends Thread {
         if (loggedIn) {
             loggedIn = false;
             loggedCount--;
+            usernames.remove(uName);
         }
         if (connectedCount < 0) {
             connectedCount = 0;

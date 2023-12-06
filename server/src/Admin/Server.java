@@ -40,6 +40,8 @@ public class Server extends Thread {
     private EmailDispatcher emailDispatch;
 
     public Server() throws IOException {
+        userDB = new UserDatabase("root", "password");
+        systemDB = new SystemDatabase("root", "password");
     }
 
     public void configureAPIServer() throws IOException {
@@ -56,8 +58,6 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    // TODO Add credential checking and failure response, update corresponding
-                    // client thread
                     String responseText = "Logged in: "
                             + exchange.getRequestHeaders().getFirst("Authorization")
                                     .substring(exchange.getRequestHeaders().getFirst("Authorization").indexOf(
@@ -83,8 +83,6 @@ public class Server extends Thread {
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
-                    // TODO Lookup user email with parsed username from request, utilize email
-                    // dispatcher
                     String responseText = "Recovery email sent to the specified user.";
                     exchange.sendResponseHeaders(200, responseText.getBytes().length);
                     OutputStream output = exchange.getResponseBody();
@@ -186,7 +184,7 @@ public class Server extends Thread {
                 if (username.trim().equals("")) {
                     return false;
                 }
-                return true;
+                return(password.trim().equals(userDB.getPassword(username).trim()));
             };
         }));
         APIServer.setExecutor(null);
