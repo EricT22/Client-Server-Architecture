@@ -49,7 +49,7 @@ public class Server extends Thread {
                 exchange.sendResponseHeaders(405, -1);
             } else {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
-                if (clientMap.get(sessionID) != null) {
+                if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
                 } else {
                     // TODO Add credential checking and failure response, update corresponding
@@ -84,7 +84,7 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
-                    System.out.println("Session " + sessionID + " Requested Acct Recovery");
+                    System.out.println("Session " + sessionID + " Requested Acct Recovery " + exchange.getRequestBody());
                 }
             }
             exchange.close();
@@ -166,7 +166,9 @@ public class Server extends Thread {
         secureContexts.forEach((c) -> c.setAuthenticator(new BasicAuthenticator("pwdProtected") {
             @Override
             public boolean checkCredentials(String username, String password) {
-                // TODO Implement checking user db for user and corresponding password
+                if(username.trim().equals("")){
+                    return false;
+                }
                 return true;
             };
         }));
