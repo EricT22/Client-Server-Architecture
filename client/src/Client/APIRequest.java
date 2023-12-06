@@ -108,26 +108,28 @@ public class APIRequest {
         response = HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
         if (response.get().statusCode() != 200) {
             System.out.println("Error: " + response.get().statusCode());
-            System.out.println(response.get().body());
+            System.out.println(getResponse());
             System.out.println(response.get().toString());
             return false;
         }
         switch (scheme) {
             case LOGIN:
                 System.out.println("Sucessfully logged in with credentials: " + new String(Base64.getDecoder()
-                        .decode(response.get().body().substring(response.get().body().indexOf(": ") + 2))));
+                        .decode(getResponse().substring(getResponse().indexOf(": ") + 2))));
                 break;
             case WRITE_DATA:
-                System.out.println("Sucessfully wrote data: " + response.get().body());
+                System.out.println("Sucessfully wrote data: " + getResponse());
                 break;
+            case READ_DATA:
+                System.out.println("Sucessfully read data: " + getResponse());
             default:
-                System.out.println(response.get().body());
+                System.out.println(getResponse());
                 break;
         }
         return true;
     }
 
-    public String getResponse() {
-        return "";
+    public String getResponse() throws InterruptedException, ExecutionException {
+        return response.get().body();
     }
 }
