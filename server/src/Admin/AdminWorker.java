@@ -26,7 +26,7 @@ public class AdminWorker implements Runnable{
         String queries = "";
 
         // num connected users
-        queries += "Active Users: " + aFrame.server.getActiveUsers();
+        queries += "Active Users: " + aFrame.server.getActiveUsers() + '\n';
         
         // num logged in users
         queries += "";
