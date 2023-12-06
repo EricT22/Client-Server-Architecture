@@ -35,10 +35,10 @@ public class AdminWorker implements Runnable{
         queries += aFrame.server.getLoggedNames() + '\n';
 
         // which users are locked out (names)
-        queries += "Locked\n" + aFrame.server.getLockedNames() + '\n';
+        queries += "Locked:\n" + aFrame.server.getLockedNames() + '\n';
 
         // num registered users
-        queries += "";
+        queries += "Registered: " + aFrame.server.registeredUsers() + '\n';
 
         aFrame.queries.setText(queries);
     }
@@ -54,10 +54,10 @@ public class AdminWorker implements Runnable{
         queries += "Logged in Users: 0" +  '\n';
 
         // which users are locked out (names)
-        queries += "Locked\n";
+        queries += "Locked:\n";
 
         // num registered users
-        queries += "";
+        queries += "Registered: " + aFrame.server.registeredUsers() + '\n';
 
         aFrame.queries.setText(queries);
     }
