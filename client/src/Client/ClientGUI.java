@@ -92,7 +92,7 @@ public class ClientGUI extends JFrame {
             server = new Socket();
             server.connect(new InetSocketAddress(ip, SOCKET_PORT), 1000);
             sessionID = (new DataInputStream(server.getInputStream())).readInt();
-            if(sessionID == -1){
+            if (sessionID == -1) {
                 return false;
             }
             APIRequest.setSessionID(sessionID);
@@ -294,6 +294,9 @@ public class ClientGUI extends JFrame {
                         } else {
                             swapToPage("LOGIN");
                         }
+                    } else {
+                        JOptionPane.showConfirmDialog(null, "Invalid Username Password Combination", "Error",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
