@@ -157,6 +157,7 @@ public class ClientGUI extends JFrame {
                         if (!connectToServer(ipField.getText())) {
                             ipField.setText("404: Server not Found");
                         } else {
+                            ipField.setText("");
                             swapToPage("LOGIN");
                         }
                     } catch (Exception e1) {
@@ -254,6 +255,8 @@ public class ClientGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     heartbeat.stopHeartbeat();
+                    userField.setText("");
+                    passField.setText("");
                     swapToPage("CONNECT");
                 }
 
@@ -276,6 +279,8 @@ public class ClientGUI extends JFrame {
                     if (valid) {
                         username = userField.getText();
                         password = passField.getText();
+                        userField.setText("");
+                        passField.setText("");
                         swapToPage("MAIN");
                     } else if (++failCount == 3) {
                         int recoveryBtn = JOptionPane.showConfirmDialog(null, "Would you like to reset this password?",
@@ -307,6 +312,8 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    userField.setText("");
+                    passField.setText("");
                     swapToPage("CR ACCT");
                 }
 
@@ -370,6 +377,7 @@ public class ClientGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     heartbeat.stopHeartbeat();
+                    dataField.setText("");
                     swapToPage("CONNECT");
                 }
 
@@ -385,6 +393,7 @@ public class ClientGUI extends JFrame {
                         APIRequest.makeRequest(RequestScheme.LOGOUT, username + ":" + password).execute();
                     } catch (InterruptedException | ExecutionException e1) {
                     }
+                    dataField.setText("");
                     swapToPage("LOGIN");
                 }
 
@@ -526,6 +535,9 @@ public class ClientGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     heartbeat.stopHeartbeat();
+                    emailField.setText("");
+                    userField.setText("");
+                    passField.setText("");
                     swapToPage("CONNECT");
                 }
 
@@ -551,6 +563,9 @@ public class ClientGUI extends JFrame {
                                 .execute();
                     } catch (InterruptedException | ExecutionException e1) {
                     }
+                    emailField.setText("");
+                    userField.setText("");
+                    passField.setText("");
                     swapToPage("LOGIN");
                 }
 
