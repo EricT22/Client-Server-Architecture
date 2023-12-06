@@ -23,12 +23,14 @@ import com.sun.net.httpserver.BasicAuthenticator;
 public class Server extends Thread {
     private static final int API_PORT = 8080;
     private static final int PORT = 8000;
+    private static final int MAX_CLIENTS = 2;
 
     private static UserDatabase userDB;
     private static SystemDatabase systemDB;
 
     private HttpServer APIServer;
-    private ConcurrentMap<Integer, ClientThread> clientMap;
+    private static ConcurrentMap<Integer, ClientThread> clientMap;
+    public static ConcurrentMap<Integer, Boolean> sessionRegistry;
     private ServerSocket socket;
 
     private final AtomicBoolean active = new AtomicBoolean(true);
@@ -84,7 +86,8 @@ public class Server extends Thread {
                     OutputStream output = exchange.getResponseBody();
                     output.write(responseText.getBytes());
                     output.flush();
-                    System.out.println("Session " + sessionID + " Requested Acct Recovery " + exchange.getRequestBody());
+                    System.out
+                            .println("Session " + sessionID + " Requested Acct Recovery " + exchange.getRequestBody());
                 }
             }
             exchange.close();
@@ -166,7 +169,7 @@ public class Server extends Thread {
         secureContexts.forEach((c) -> c.setAuthenticator(new BasicAuthenticator("pwdProtected") {
             @Override
             public boolean checkCredentials(String username, String password) {
-                if(username.trim().equals("")){
+                if (username.trim().equals("")) {
                     return false;
                 }
                 return true;
@@ -180,6 +183,11 @@ public class Server extends Thread {
         System.out.println("Starting the Server");
 
         clientMap = new ConcurrentHashMap<Integer, ClientThread>();
+        sessionRegistry = new ConcurrentHashMap<Integer, Boolean>();
+
+        for (int i = 0; i < MAX_CLIENTS; i++) {
+            sessionRegistry.put(i, false);
+        }
 
         try {
             APIServer = HttpServer.create(new InetSocketAddress(API_PORT), 0);
@@ -215,19 +223,17 @@ public class Server extends Thread {
     }
 
     public int getNextAvailableSession() {
-        System.out.println("Searching for a new Session ID w/ Max of " + clientMap.size());
+        System.out.println("Searching for a new Session ID w/ Max of " + MAX_CLIENTS);
         boolean found = false;
         int nextSession = -1;
-        for (int i = 0; i < clientMap.size() && !found; i++) {
-            if (!clientMap.get(i).isActive() || clientMap.get(i) == null) {
+        for (int i = 0; i < sessionRegistry.size() && !found; i++) {
+            if (!sessionRegistry.get(i)) {
                 nextSession = i;
                 found = true;
+                sessionRegistry.put(i,true);
             }
         }
-        if (clientMap.size() == 0) {
-            nextSession = 0;
-        }
-        System.out.println("Allocating a new Session ID " + nextSession);
+        System.out.println(!found ? "Rejecting Connection" : "Allocating a new Session ID " + nextSession);
         return nextSession;
     }
 

@@ -32,6 +32,7 @@ public class ClientThread extends Thread {
     public void stopClient() {
         System.out.println("Attempting to stop Client Thread on Session ID" + sessionID);
         active.set(false);
+        Server.sessionRegistry.put(sessionID,false);
         try {
             socket.close();
         } catch (IOException e) {
