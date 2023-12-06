@@ -30,7 +30,6 @@ public class APIRequest {
     }
 
     public static APIRequest makeRequest(RequestScheme scheme, String data) {
-        // TODO replace YTWRta with username:password encoded into base64
         APIRequest apiReq = new APIRequest(scheme, data);
 
         switch (scheme) {

@@ -15,7 +15,6 @@ public class SystemDatabase extends AbstractSQLConnector {
         try {
             resultSet = statement.executeQuery("SELECT displayData FROM systemTable WHERE username='"+username+"';");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -29,7 +28,6 @@ public class SystemDatabase extends AbstractSQLConnector {
             statement.executeUpdate("UPDATE systemTable SET displayData='" + displayData + "' WHERE username='"+username+"';");
             resultSet = statement.executeQuery("SELECT * FROM systemTable;");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -40,7 +38,6 @@ public class SystemDatabase extends AbstractSQLConnector {
             statement.executeUpdate("INSERT INTO systemTable (username, displayData) VALUES ('"+username+"', '"+displayData+"');");
             resultSet = statement.executeQuery("SELECT * FROM systemTable;");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -49,7 +46,6 @@ public class SystemDatabase extends AbstractSQLConnector {
         try {
             resultSet = statement.executeQuery("SELECT * FROM systemTable;");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         System.out.println(getResultSet());

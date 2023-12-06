@@ -15,7 +15,6 @@ public class UserDatabase extends AbstractSQLConnector{
             statement.executeUpdate("UPDATE usertable SET pass='" + password + "' WHERE username='"+username+"';");
             resultSet = statement.executeQuery("SELECT * FROM usertable;");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -24,7 +23,6 @@ public class UserDatabase extends AbstractSQLConnector{
         try {
             resultSet = statement.executeQuery("SELECT emailaddress FROM usertable WHERE username='"+username+"';");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -38,7 +36,6 @@ public class UserDatabase extends AbstractSQLConnector{
             statement.executeUpdate("INSERT INTO usertable (username, pass, emailaddress) VALUES ('"+username+"', '"+password+"', '"+email+"');");
             resultSet = statement.executeQuery("SELECT * FROM usertable;");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -47,7 +44,6 @@ public class UserDatabase extends AbstractSQLConnector{
         try {
             resultSet = statement.executeQuery("SELECT * FROM usertable;");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         System.out.println(getResultSet());
