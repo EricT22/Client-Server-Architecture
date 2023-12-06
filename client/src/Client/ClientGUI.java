@@ -12,6 +12,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.DataInputStream;
 
 import javax.swing.Box;
@@ -20,10 +22,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import java.util.regex.Pattern;
-
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class ClientGUI extends JFrame {
@@ -147,6 +150,26 @@ public class ClientGUI extends JFrame {
             ipField.setHorizontalAlignment(JTextField.CENTER);
             ipField.setBackground(Color.GRAY);
             ipField.setForeground(Color.RED);
+            ipField.addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    // n/a
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == 10){
+                        connectButton.doClick();
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    // n/a
+                }
+                
+            });
 
             connectButton = new JButton("CONNECT");
             connectButton.setFont(new Font("Arial", Font.PLAIN, 50));
@@ -179,7 +202,7 @@ public class ClientGUI extends JFrame {
         private JLabel userLabel;
         private JLabel passLabel;
         private JTextField userField;
-        private JTextField passField;
+        private JPasswordField passField;
         private JButton disconnectButton;
         private JButton loginButton;
         private JButton createAcctButton;
@@ -243,11 +266,32 @@ public class ClientGUI extends JFrame {
             passLabel.setFont(new Font("Arial", Font.PLAIN, 35));
             passLabel.setForeground(Color.WHITE);
 
-            passField = new JTextField("", 15);
+            passField = new JPasswordField("", 15);
+            passField.setEchoChar((char)0);
             passField.setFont(new Font("Arial", Font.PLAIN, 25));
             passField.setHorizontalAlignment(JTextField.CENTER);
             passField.setBackground(Color.GRAY);
             passField.setForeground(Color.RED);
+            passField.addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    // n/a
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == 10){
+                        loginButton.doClick();
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    // n/a
+                }
+                
+            });
 
             disconnectButton = new JButton("Disconnect");
             disconnectButton.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -269,7 +313,7 @@ public class ClientGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     APIRequest loginRequest = APIRequest.makeRequest(RequestScheme.LOGIN,
-                            userField.getText() + ":" + passField.getText());
+                            userField.getText() + ":" + Arrays.toString(passField.getPassword()));
                     boolean valid = false;
                     try {
                         valid = loginRequest.execute();
@@ -278,7 +322,7 @@ public class ClientGUI extends JFrame {
                     }
                     if (valid) {
                         username = userField.getText();
-                        password = passField.getText();
+                        password = (Arrays.toString(passField.getPassword()));
                         userField.setText("");
                         passField.setText("");
                         swapToPage("MAIN");
@@ -447,7 +491,7 @@ public class ClientGUI extends JFrame {
         private JLabel passLabel;
         private JTextField emailField;
         private JTextField userField;
-        private JTextField passField;
+        private JPasswordField passField;
         private JButton disconnectButton;
         private JButton createButton;
 
@@ -522,11 +566,32 @@ public class ClientGUI extends JFrame {
             passLabel.setFont(new Font("Arial", Font.PLAIN, 35));
             passLabel.setForeground(Color.WHITE);
 
-            passField = new JTextField("", 15);
+            passField = new JPasswordField("", 15);
+            passField.setEchoChar((char)0);
             passField.setFont(new Font("Arial", Font.PLAIN, 25));
             passField.setHorizontalAlignment(JTextField.CENTER);
             passField.setBackground(Color.GRAY);
             passField.setForeground(Color.RED);
+            passField.addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    // n/a
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == 10){
+                        createButton.doClick();
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    // n/a
+                }
+                
+            });
 
             disconnectButton = new JButton("Disconnect");
             disconnectButton.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -549,7 +614,7 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (!(checkEmailForm(emailField.getText()) && checkPasswordForm(passField.getText()))) {
+                    if (!(checkEmailForm(emailField.getText()) && checkPasswordForm(Arrays.toString(passField.getPassword())))) {
                         JOptionPane.showConfirmDialog(null,
                                 "Invalid Username Or Password\nPassword must be eight characters and have both and uppercase and lowercase letter, a number, and a special character",
                                 "Error",
@@ -559,7 +624,7 @@ public class ClientGUI extends JFrame {
                     try {
                         APIRequest
                                 .makeRequest(RequestScheme.REGISTER,
-                                        emailField.getText() + "||" + userField.getText() + ":" + passField.getText())
+                                        emailField.getText() + "||" + userField.getText() + ":" + Arrays.toString(passField.getPassword()))
                                 .execute();
                     } catch (InterruptedException | ExecutionException e1) {
                     }
