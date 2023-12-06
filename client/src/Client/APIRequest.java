@@ -59,8 +59,6 @@ public class APIRequest {
                         .build();
                 break;
             case WRITE_DATA:
-                System.out.println(apiReq.getPayload());
-                System.out.println(apiReq.getPayload().substring(apiReq.getPayload().indexOf("||")+2));
                 apiReq.request = HttpRequest.newBuilder()
                         .uri(URI.create("http://" + serverIP + "/api/write"))
                         .method("POST",
@@ -71,9 +69,6 @@ public class APIRequest {
                                         .encodeToString(apiReq.getPayload().substring(apiReq.getPayload().indexOf("||")+2).getBytes()))
                         .header("Session", Integer.toString(sessionID))
                         .build();
-
-                System.out.println("Body will be " + apiReq.getPayload().split("||")[0]);
-                System.out.println("Auth will be " + apiReq.getPayload().split("||")[1]);
                 break;
             case LOGOUT:
                 apiReq.request = HttpRequest.newBuilder()
