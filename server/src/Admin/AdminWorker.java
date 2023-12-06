@@ -26,7 +26,7 @@ public class AdminWorker implements Runnable{
         String queries = "";
 
         // num connected users
-        queries += "Active Users: " + aFrame.server.getActiveUsers() + '\n';
+        queries += "Connected Users: " + aFrame.server.getActiveUsers() + '\n';
         
         // num logged in users
         queries += "Logged in Users: " + aFrame.server.getLoggedUsers() + '\n';
@@ -48,7 +48,7 @@ public class AdminWorker implements Runnable{
         String queries = "";
 
         // num connected users
-        queries += "Active Users: 0" + '\n';
+        queries += "Connected Users: 0" + '\n';
         
         // num logged in users
         queries += "Logged in Users: 0" +  '\n';
