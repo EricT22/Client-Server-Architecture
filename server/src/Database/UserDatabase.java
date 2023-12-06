@@ -9,6 +9,11 @@ public class UserDatabase extends AbstractSQLConnector {
         super(username, pass);
     }
 
+    public static void main(String[] args) {
+        UserDatabase userDB = new UserDatabase("root", "password");
+        System.out.println(userDB.getNumOfRegisteredUsers());
+    }
+
     public void updatePassword(String username, String password) { // INSERTS PASSWORD AT USERNAME
 
         try {
@@ -66,8 +71,7 @@ public class UserDatabase extends AbstractSQLConnector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println(resultSet);
-        return 0;
+        return getRowCount();
     }
 
     @Override
@@ -94,5 +98,17 @@ public class UserDatabase extends AbstractSQLConnector {
             returnString += ("VendorError: " + ex.getErrorCode());
         }
         return returnString;
+    }
+
+    public int getRowCount(){
+        int returnVal = 0;
+        try {
+            // -- the metadata tells us how many columns in the data
+            while (resultSet.next()) {
+                returnVal++;
+            }
+        } catch (SQLException ex) {
+        }
+        return returnVal;
     }
 }

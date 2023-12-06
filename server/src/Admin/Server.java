@@ -317,6 +317,10 @@ public class Server extends Thread {
         return ClientThread.getLockedNames();
     }
 
+    public int registeredUsers() {
+        return userDB.getNumOfRegisteredUsers();
+    }
+
     public void shutdownServer() throws Exception {
         System.out.println("Attempting to stop server.");
         socket.close();
