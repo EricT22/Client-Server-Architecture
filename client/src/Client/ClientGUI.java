@@ -313,7 +313,7 @@ public class ClientGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     APIRequest loginRequest = APIRequest.makeRequest(RequestScheme.LOGIN,
-                            userField.getText() + ":" + Arrays.toString(passField.getPassword()));
+                            userField.getText() + ":" + new String(passField.getPassword()));
                     boolean valid = false;
                     try {
                         valid = loginRequest.execute();
@@ -322,7 +322,7 @@ public class ClientGUI extends JFrame {
                     }
                     if (valid) {
                         username = userField.getText();
-                        password = (Arrays.toString(passField.getPassword()));
+                        password = (new String(passField.getPassword()));
                         userField.setText("");
                         passField.setText("");
                         swapToPage("MAIN");
@@ -614,7 +614,7 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (!(checkEmailForm(emailField.getText()) && checkPasswordForm(Arrays.toString(passField.getPassword())))) {
+                    if (!(checkEmailForm(emailField.getText()) && checkPasswordForm(new String(passField.getPassword())))) {
                         JOptionPane.showConfirmDialog(null,
                                 "Invalid Username Or Password\nPassword must be eight characters and have both and uppercase and lowercase letter, a number, and a special character",
                                 "Error",
@@ -624,7 +624,7 @@ public class ClientGUI extends JFrame {
                     try {
                         APIRequest
                                 .makeRequest(RequestScheme.REGISTER,
-                                        emailField.getText() + "||" + userField.getText() + ":" + Arrays.toString(passField.getPassword()))
+                                        emailField.getText() + "||" + userField.getText() + ":" + new String(passField.getPassword()))
                                 .execute();
                     } catch (InterruptedException | ExecutionException e1) {
                     }
