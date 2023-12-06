@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import java.util.concurrent.ExecutionException;
@@ -77,6 +78,16 @@ public class ClientGUI extends JFrame {
         this.add(container, BorderLayout.CENTER);
 
         this.setVisible(true);
+    }
+
+    public boolean validPassword(String password) {
+        Matcher matcher = passPattern.matcher(password);
+        return matcher.find();
+    }
+
+    public boolean validEmailAddress(String emailaddress) {
+        Matcher matcher = emailPattern.matcher(emailaddress);
+        return matcher.find();
     }
 
     private boolean connectToServer(String ip) throws Exception {
@@ -537,8 +548,14 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    if (!(validEmailAddress(emailField.getText()) && validPassword(passField.getText()))) {
+                        JOptionPane.showConfirmDialog(null,
+                                "Invalid Username Or Password\nPassword must be eight characters and have both and uppercase and lowercase letter, a number, and a special character",
+                                "Error",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     try {
-
                         APIRequest
                                 .makeRequest(RequestScheme.REGISTER,
                                         emailField.getText() + "||" + userField.getText() + ":" + passField.getText())
