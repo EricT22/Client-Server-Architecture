@@ -19,12 +19,14 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import java.util.regex.Pattern;
 
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class ClientGUI extends JFrame {
     private Socket server;
@@ -47,6 +49,8 @@ public class ClientGUI extends JFrame {
     private Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
 
     private JPanel container;
+
+    private int failCount = 0;
 
     public ClientGUI() {
         super("Client");
@@ -87,14 +91,15 @@ public class ClientGUI extends JFrame {
             System.out.println("Connecting to server " + ip + ":" + SOCKET_PORT);
             server = new Socket();
             server.connect(new InetSocketAddress(ip, SOCKET_PORT), 1000);
-            System.out.println("Got here");
             sessionID = (new DataInputStream(server.getInputStream())).readInt();
-            System.out.println("Got here too.");
+            if(sessionID == -1){
+                return false;
+            }
             APIRequest.setSessionID(sessionID);
         } catch (Exception e) {
             return false;
         }
-        heartbeat = new HeartbeatThread(server,this);
+        heartbeat = new HeartbeatThread(server, this);
         heartbeat.start();
         System.out.println("Connected to Server w/ Session ID" + sessionID);
         return true;
@@ -109,6 +114,9 @@ public class ClientGUI extends JFrame {
     }
 
     public void swapToPage(String pagename) {
+        if (pagename.equals("LOGIN")) {
+            failCount = 0;
+        }
         CardLayout cl = (CardLayout) container.getLayout();
         cl.show(container, pagename);
     }
@@ -270,10 +278,23 @@ public class ClientGUI extends JFrame {
                     }
                     if (valid) {
                         swapToPage("MAIN");
-                    } else {
-                        //TODO Increment failure count pop up acct recovery
+                    } else if (++failCount == 3) {
+                        int recoveryBtn = JOptionPane.showConfirmDialog(null, "Would you like to reset this password?",
+                                "Error", JOptionPane.YES_NO_OPTION);
+                        if (recoveryBtn == JOptionPane.YES_OPTION) {
+                            String resetUsername = JOptionPane.showInputDialog("Please enter your username.");
+                            if (resetUsername != null) {
+                                try {
+                                    APIRequest.makeRequest(RequestScheme.ACCT_RECOVERY, resetUsername).execute();
+                                } catch (Exception e1) {
+                                }
+                            } else {
+                                swapToPage("LOGIN");
+                            }
+                        } else {
+                            swapToPage("LOGIN");
+                        }
                     }
-
                 }
 
             });
@@ -284,7 +305,7 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //TODO Register account request
+                    // TODO Register account request
                     swapToPage("CR ACCT");
                 }
 
@@ -361,7 +382,7 @@ public class ClientGUI extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //TODO Implement logout request
+                    // TODO Implement logout request
                     swapToPage("LOGIN");
                 }
 
