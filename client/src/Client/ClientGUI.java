@@ -48,6 +48,9 @@ public class ClientGUI extends JFrame {
     private final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
 
+    private String username;
+    private String password;
+
     private JPanel container;
 
     private int failCount = 0;
@@ -277,6 +280,8 @@ public class ClientGUI extends JFrame {
                         e1.printStackTrace();
                     }
                     if (valid) {
+                        username = userField.getText();
+                        password = passField.getText();
                         swapToPage("MAIN");
                     } else if (++failCount == 3) {
                         int recoveryBtn = JOptionPane.showConfirmDialog(null, "Would you like to reset this password?",
@@ -335,8 +340,6 @@ public class ClientGUI extends JFrame {
 
             prepareComponents();
 
-            // TODO: needs layout fixing
-
             this.setLayout(new BorderLayout());
 
             JPanel dataPanel = new JPanel();
@@ -386,6 +389,10 @@ public class ClientGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // TODO Implement logout request
+                    try {
+                        APIRequest.makeRequest(RequestScheme.LOGOUT, username + ":" + password).execute();
+                    } catch (InterruptedException | ExecutionException e1) {
+                    }
                     swapToPage("LOGIN");
                 }
 
