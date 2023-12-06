@@ -26,7 +26,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import java.util.regex.Pattern;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class ClientGUI extends JFrame {
