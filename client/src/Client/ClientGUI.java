@@ -161,7 +161,7 @@ public class ClientGUI extends JFrame {
                     if (e.getKeyCode() == 10){
                         connectButton.doClick();
                     } else if (e.getKeyCode() == 92) {
-                        JOptionPane.showMessageDialog(null, "IP: 1.1.1.1", "Snake says", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "IP: 1.1.1.1", "Solid Snake says", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
 
