@@ -160,6 +160,8 @@ public class ClientGUI extends JFrame {
                 public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == 10){
                         connectButton.doClick();
+                    } else if (e.getKeyCode() == 92) {
+                        JOptionPane.showMessageDialog(null, "IP: 1.1.1.1", "Snake says", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
 
@@ -176,6 +178,11 @@ public class ClientGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
+                        if (ipField.getText().equals("1.1.1.1")){
+                            JOptionPane.showMessageDialog(null, "You thought something would happen didn't you.\nYou gullible you... :)", "Psycho Mantis?", JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
+
                         if (!connectToServer(ipField.getText())) {
                             ipField.setText("404: Server not Found");
                         } else {
