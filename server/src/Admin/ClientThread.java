@@ -103,6 +103,12 @@ public class ClientThread extends Thread {
         loggedCount--;
     }
 
+    public static boolean isLoggedIn(String s){
+        String creds = new String(Base64.getDecoder().decode(s.substring(s.indexOf(" ") + 1)));
+        String uName = creds.substring(0, creds.indexOf(":"));
+        return usernames.contains(uName);
+    }
+
     public synchronized void unlock(String s) {
         if(!locked){
             return;

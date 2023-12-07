@@ -90,6 +90,8 @@ public class Server extends Thread {
                 int sessionID = Integer.parseInt(exchange.getRequestHeaders().getFirst("Session"));
                 if (clientMap.get(sessionID) == null) {
                     exchange.sendResponseHeaders(403, -1);
+                } else if (ClientThread.isLoggedIn(exchange.getRequestHeaders().getFirst("Authorization"))) {
+                    exchange.sendResponseHeaders(401, -1);
                 } else {
                     String responseText = "Logged in: "
                             + exchange.getRequestHeaders().getFirst("Authorization")
