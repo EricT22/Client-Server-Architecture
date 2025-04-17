@@ -1,5 +1,6 @@
 package Database;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
@@ -16,7 +17,13 @@ public class SystemDatabase extends AbstractSQLConnector {
 
     public String getDisplayData(String username) { //WILL SELECT DIDPLAY DATA FROM GIVEN USERNAME
         try {
-            resultSet = statement.executeQuery("SELECT displayData FROM systemTable WHERE username='"+username+"';");
+            String query = "SELECT displayData FROM systemTable WHERE username= ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+
+            resultSet = preparedStatement.executeQuery();
+
+            // resultSet = statement.executeQuery("SELECT displayData FROM systemTable WHERE username='"+username+"';");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -28,7 +35,15 @@ public class SystemDatabase extends AbstractSQLConnector {
     public void updateDisplayData(String username, String displayData) { //INSERTS DISPLAYDATA AT USERNAME
 
         try {
-            statement.executeUpdate("UPDATE systemTable SET displayData='" + displayData + "' WHERE username='"+username+"';");
+            String query = "UPDATE systemTable SET displayData= ? WHERE username= ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, displayData);
+            preparedStatement.setString(2, username);
+
+            preparedStatement.executeUpdate();
+
+            // statement.executeUpdate("UPDATE systemTable SET displayData='" + displayData + "' WHERE username='"+username+"';");
+            
             resultSet = statement.executeQuery("SELECT * FROM systemTable;");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,7 +53,14 @@ public class SystemDatabase extends AbstractSQLConnector {
     public void addNewData(String username, String displayData) {  //CREATES NEW ROW IN TABLE WITH USERNAME AND DISPLAY DATA
 
         try {
-            statement.executeUpdate("INSERT INTO systemTable (username, displayData) VALUES ('"+username+"', '"+displayData+"');");
+            String query = "INSERT INTO systemTable (username, displayData) VALUES (?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, displayData);
+
+            preparedStatement.executeUpdate();
+
+            // statement.executeUpdate("INSERT INTO systemTable (username, displayData) VALUES ('"+username+"', '"+displayData+"');");
             resultSet = statement.executeQuery("SELECT * FROM systemTable;");
         } catch (SQLException e) {
             e.printStackTrace();
