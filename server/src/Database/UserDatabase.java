@@ -1,5 +1,6 @@
 package Database;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
@@ -17,7 +18,16 @@ public class UserDatabase extends AbstractSQLConnector {
     public void updatePassword(String username, String password) { // INSERTS PASSWORD AT USERNAME
 
         try {
-            statement.executeUpdate("UPDATE usertable SET pass='" + password + "' WHERE username='" + username + "';");
+            String query = "UPDATE usertable SET pass= ? WHERE username= ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, password);
+            preparedStatement.setString(2, username);
+
+            preparedStatement.executeUpdate();
+
+
+            // statement.executeUpdate("UPDATE usertable SET pass='" + password + "' WHERE username='" + username + "';");
+            
             resultSet = statement.executeQuery("SELECT * FROM usertable;");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -26,7 +36,13 @@ public class UserDatabase extends AbstractSQLConnector {
 
     public String getEmail(String username) { // GETS EMAIL FROM GIVEN USERNAME
         try {
-            resultSet = statement.executeQuery("SELECT emailaddress FROM usertable WHERE username='" + username + "';");
+            String query = "SELECT emailaddress FROM usertable WHERE username= ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+
+            resultSet = preparedStatement.executeQuery();
+
+            // resultSet = statement.executeQuery("SELECT emailaddress FROM usertable WHERE username='" + username + "';");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -36,7 +52,13 @@ public class UserDatabase extends AbstractSQLConnector {
 
     public String getPassword(String username) {// GETS PASSWORD FROM GIVEN USERNAME
         try {
-            resultSet = statement.executeQuery("SELECT pass FROM usertable WHERE username='" + username + "';");
+            String query = "SELECT pass FROM usertable WHERE username= ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+
+            resultSet = preparedStatement.executeQuery();
+
+            // resultSet = statement.executeQuery("SELECT pass FROM usertable WHERE username='" + username + "';");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -48,8 +70,17 @@ public class UserDatabase extends AbstractSQLConnector {
                                                                              // PASSWORD EMAIL
 
         try {
-            statement.executeUpdate("INSERT INTO usertable (username, pass, emailaddress) VALUES ('" + username + "', '"
-                    + password + "', '" + email + "');");
+            String query = "INSERT INTO usertable (username, pass, emailaddress) VALUES (?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, email);
+
+            preparedStatement.executeUpdate();
+
+            // statement.executeUpdate("INSERT INTO usertable (username, pass, emailaddress) VALUES ('" + username + "', '"
+            //         + password + "', '" + email + "');");
+
             resultSet = statement.executeQuery("SELECT * FROM usertable;");
         } catch (SQLException e) {
             e.printStackTrace();
